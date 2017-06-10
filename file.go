@@ -36,6 +36,56 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
+// FileSize returns file size in bytes and possible error.
+func FileSize(file string) (int64, error) {
+	f, err := os.Stat(file)
+	if err != nil {
+		return 0, err
+	}
+	return f.Size(), nil
+}
+
+func Copy(src, dest string) error {
+	// Gather file information to set back later.
+	si, err := os.Lstat(src)
+	if err != nil {
+		return err
+	}
+
+	// Handle symbolic link.
+	if si.Mode()&os.ModeSymlink != 0 {
+		target, err := os.Readlink(src)
+		if err != nil {
+			return err
+		}
+		// NOTE: os.Chmod and os.Chtimes don't recoganize symbolic link,
+		// which will lead "no such file or directory" error.
+		return os.Symlink(target, dest)
+	}
+
+	sr, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sr.Close()
+
+	dw, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer dw.Close()
+
+	if _, err = io.Copy(dw, sr); err != nil {
+		return err
+	}
+
+	// Set back file information.
+	if err = os.Chtimes(dest, si.ModTime(), si.ModTime()); err != nil {
+		return err
+	}
+	return os.Chmod(dest, si.Mode())
+}
+
 func CopyFile(src, dst string) (w int64, err error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
