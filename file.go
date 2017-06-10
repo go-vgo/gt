@@ -11,7 +11,10 @@
 package gt
 
 import (
+	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
+	"hash"
 	"io"
 	"io/ioutil"
 	"os"
@@ -43,6 +46,47 @@ func FileSize(file string) (int64, error) {
 		return 0, err
 	}
 	return f.Size(), nil
+}
+
+func OFileSha(filepath string, args ...string) (string, error) {
+	file, err := os.Open(filepath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	var sha string
+
+	if len(args) > 0 {
+		sha, err = FileSha(file, args[0])
+	} else {
+		sha, err = FileSha(file)
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return sha, nil
+}
+
+func FileSha(file *os.File, args ...string) (string, error) {
+	var h hash.Hash
+
+	if len(args) > 0 {
+		h = sha256.New()
+	} else {
+		h = sha1.New()
+	}
+
+	_, err := io.Copy(h, file)
+	if err != nil {
+		return "", err
+	}
+
+	sha := fmt.Sprintf("%x", h.Sum(nil))
+
+	return sha, nil
 }
 
 func Copy(src, dest string) error {
