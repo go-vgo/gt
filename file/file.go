@@ -8,7 +8,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-package gt
+package file
+
+// package gt
 
 import (
 	"crypto/sha1"
