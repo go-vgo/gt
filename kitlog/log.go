@@ -27,12 +27,12 @@ const (
 	CallerNum = 5
 )
 
-type LogFormat byte
+type LogFormat string
 
 const (
-	JsonFormat LogFormat = 1 << iota
-	FmtFormat
-	NoFormat
+	JsonFormat LogFormat = "json"
+	FmtFormat            = "fmt"
+	NoFormat             = "no"
 )
 
 func init() {
@@ -110,9 +110,17 @@ func GlobalLog() *KitLogger {
 }
 
 // SetGlobalLog is not thread saftly
-func SetGlobalLog(opt LogOption) {
+func SetGlobalLog(opt LogOption, format ...LogFormat) {
 	Close()
-	tmpLog, err := NewKitLogger(opt)
+	var (
+		tmpLog *KitLogger
+		err    error
+	)
+	if len(format) > 0 {
+		tmpLog, err = NewKitLogger(opt, format[0])
+	} else {
+		tmpLog, err = NewKitLogger(opt)
+	}
 	if err != nil {
 		panic(err)
 	}
