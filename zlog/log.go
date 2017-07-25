@@ -13,6 +13,7 @@ package zlog
 import (
 	// "errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -55,9 +56,11 @@ func Init(tpath string) {
 
 	if config.Mode == "dev" {
 		InitDev()
+		zlogTime = zap.Error(nil)
 	} else {
 		InitLog()
 		InitErrLog()
+		// go InitErrLog()
 	}
 }
 
@@ -90,7 +93,14 @@ func deleteOldLog() {
 }
 
 func InitDev() {
-	logger, _ = zap.NewProduction()
+	// logger, _ = zap.NewProduction()
+	logCfg := zap.NewDevelopmentConfig()
+	logCfg.Sampling = nil
+	logger, zErr = logCfg.Build()
+	if zErr != nil {
+		log.Fatal("NewDevelopmentConfig ERR:", zErr)
+	}
+
 	errLogger = logger
 
 	defer logger.Sync() // flushes buffer, if any
@@ -100,7 +110,7 @@ func InitDev() {
 
 func conf() (string, string) {
 	// var lpath, name string
-	var lpath, name string = "./log", "foo"
+	var lpath, name string = "./log", "log"
 
 	if config.Path != "" {
 		lpath = config.Path
@@ -166,18 +176,25 @@ func InitErrLog() {
 	errSugar = errLogger.Sugar()
 }
 
-func Info(msg, info string) {
-	logger.Info(msg,
-		zlogTime,
-		zap.String("info", info),
-	)
+func Print(args ...interface{}) string {
+	if len(args) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("%v ", args[0])
 }
 
-func Error(msg string, err error) {
-	logger.Error(msg,
-		zlogTime,
-		zap.Error(err),
-	)
+func Printf(args ...interface{}) string {
+	if len(args) < 5 {
+		return ""
+	}
+
+	return fmt.Sprintf(
+		"method: %v, statusCode: %v, req: %s, ip: %s, time: %fs",
+		args[0],
+		args[1],
+		args[2],
+		args[3],
+		args[4])
 }
 
 func (z *Zlog) Error(msg string, err error) {
@@ -187,17 +204,48 @@ func (z *Zlog) Error(msg string, err error) {
 	)
 }
 
-func LogInfo(msg, info string) {
+func LogInfo(msg string, info ...string) {
+	var logInfo string = ""
+	if len(info) > 0 {
+		logInfo = info[0]
+	}
+
 	errLogger.Info(msg,
 		zlogTime,
-		zap.String("info", info),
+		zap.String("info", logInfo),
 	)
 }
 
-func LogError(msg string, err error) {
+func Error(msg string, err ...error) {
+	var logErr error = nil
+	if len(err) > 0 {
+		logErr = err[0]
+	}
 	errLogger.Error(msg,
 		zlogTime,
-		zap.Error(err),
+		zap.Error(logErr),
+	)
+}
+
+func Fatal(msg string, err ...error) {
+	var logErr error = nil
+	if len(err) > 0 {
+		logErr = err[0]
+	}
+	errLogger.Fatal(msg,
+		zlogTime,
+		zap.Error(logErr),
+	)
+}
+
+func Panic(msg string, err ...error) {
+	var logErr error = nil
+	if len(err) > 0 {
+		logErr = err[0]
+	}
+	errLogger.Panic(msg,
+		zlogTime,
+		zap.Error(logErr),
 	)
 }
 
@@ -208,40 +256,86 @@ func LogsError(msg string, err error) {
 	)
 }
 
-func Warn(msg, warn string) {
+func SugarError(msg string, err error) {
+	errSugar.Error(msg,
+		zlogTime,
+		zap.Error(err),
+	)
+}
+
+func SugarFatal(msg string, err error) {
+	errSugar.Fatal(msg,
+		zlogTime,
+		zap.Error(err),
+	)
+}
+
+func SugarPanic(msg string, err error) {
+	errSugar.Panic(msg,
+		zlogTime,
+		zap.Error(err),
+	)
+}
+
+func Info(msg string, info ...string) {
+	var logInfo string = ""
+	if len(info) > 0 {
+		logInfo = info[0]
+	}
+	logger.Info(msg,
+		zlogTime,
+		zap.String("info", logInfo),
+	// fields,
+	)
+}
+
+func Warn(msg string, warn ...string) {
+	var logWarn string = ""
+	if len(warn) > 0 {
+		logWarn = warn[0]
+	}
 	logger.Warn(msg,
 		zlogTime,
-		zap.String("warn", warn),
+		zap.String("warn", logWarn),
 	)
 }
 
-func Debug(msg, debug string) {
+func Debug(msg string, debug ...string) {
+	var logDebug string = ""
+	if len(debug) > 0 {
+		logDebug = debug[0]
+	}
 	logger.Debug(msg,
 		zlogTime,
-		zap.String("debug", debug),
+		zap.String("debug", logDebug),
 	)
 }
 
-func Panic(msg, warn string, err error) {
+func Infoff(msg string, fields ...zapcore.Field) {
+	logger.Info(msg,
+		zlogTime,
+		fields[0],
+	)
+}
+
+func LogError(msg string, err error) {
+	logger.Error(msg,
+		zlogTime,
+		zap.Error(err),
+	)
+}
+
+func LogPanic(msg string, err error) {
 	logger.Panic(msg,
 		zlogTime,
-		zap.String("warn", warn),
 		zap.Error(err),
 	)
 }
 
-func Fatal(msg, warn string, err error) {
+func LogFatal(msg string, err error) {
 	logger.Fatal(msg,
 		zlogTime,
-		zap.String("warn", warn),
 		zap.Error(err),
-	)
-}
-
-func InfoW(msg, info string) {
-	sugar.Infow(msg,
-		zlogTime,
-		"info", info,
 	)
 }
 
@@ -249,6 +343,13 @@ func Infof(msg, info string) {
 	sugar.Infof(msg,
 		zlogTime,
 		zap.String("info", info),
+	)
+}
+
+func InfoW(msg, info string) {
+	sugar.Infow(msg,
+		zlogTime,
+		"info", info,
 	)
 }
 
