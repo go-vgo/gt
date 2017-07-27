@@ -59,8 +59,8 @@ func Init(tpath string) {
 		zlogTime = zap.Error(nil)
 	} else {
 		InitLog()
-		InitErrLog()
-		// go InitErrLog()
+		// InitErrLog()
+		go InitErrLog()
 	}
 }
 
