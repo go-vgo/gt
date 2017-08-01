@@ -40,7 +40,7 @@ type logConfig struct {
 	Mode    string
 	Path    string
 	Name    string
-	MaxDays int64
+	MaxDays int64 `toml:"max_days"`
 	// Srv  Server     `toml:"server"`
 }
 
