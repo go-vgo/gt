@@ -18,7 +18,7 @@ func TestSetAdd(t *testing.T) {
 	set := New()
 	set.Add()
 	set.Add(1)
-	go set.Add(2)
+	set.Add(2)
 	set.Add(2, 3)
 	set.Add()
 	if actualValue := set.Empty(); actualValue != false {
@@ -59,7 +59,7 @@ func TestSetRemove(t *testing.T) {
 	if actualValue := set.Len(); actualValue != 2 {
 		t.Errorf("Got %v expected %v", actualValue, 2)
 	}
-	go set.Remove(3)
+	set.Remove(3)
 	set.Remove(3)
 	set.Remove()
 	set.Remove(2)

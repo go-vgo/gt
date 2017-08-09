@@ -7,13 +7,16 @@ go:
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
-  - go get -u github.com/BurntSushi/toml
-  - go get -u github.com/coreos/etcd  
-  - go get -u google.golang.org/grpc 
-  - go get -u github.com/go-kit/kit 
-  - go get -u go.uber.org/zap
-  - go get -u gopkg.in/natefinch/lumberjack.v2
-  - go get -v -t
+  # - go get -u github.com/BurntSushi/toml
+  # - go get -u github.com/fsnotify/fsnotify
+  # - go get -u github.com/coreos/etcd  
+  # - go get -u google.golang.org/grpc 
+  # - go get -u github.com/coreos/etcd/clientv3
+  # - go get -u github.com/go-kit/kit/log 
+  # - go get -u go.uber.org/zap
+  # - go get -u gopkg.in/natefinch/lumberjack.v2
+  # - go get -v -t
+  - go get -t -d -v ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
