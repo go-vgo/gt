@@ -1,4 +1,5 @@
 # gt
+[![Build Status](https://travis-ci.org/go-vgo/gt.svg)](https://travis-ci.org/go-vgo/gt)
 [![CircleCI Status](https://circleci.com/gh/go-vgo/gt.svg?style=shield)](https://circleci.com/gh/go-vgo/gt)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-vgo/gt)](https://goreportcard.com/report/github.com/go-vgo/gt)
 [![GoDoc](https://godoc.org/github.com/go-vgo/gt?status.svg)](https://godoc.org/github.com/go-vgo/gt)

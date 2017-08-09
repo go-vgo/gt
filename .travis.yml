@@ -5,7 +5,18 @@ go:
   - 1.8.x
   - tip
 
-install: go get -v -t
+install:
+  - export PATH=$PATH:$HOME/gopath/bin
+  - go get -u github.com/BurntSushi/toml
+  - go get -u github.com/coreos/etcd  
+  - go get -u google.golang.org/grpc 
+  - go get -u github.com/go-kit/kit 
+  - go get -u go.uber.org/zap
+  - go get -u gopkg.in/natefinch/lumberjack.v2
+  - go get -v -t
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 # notifications:
 #   email:
