@@ -1,7 +1,3 @@
-// Copyright (c) 2015, Emir Pasic. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-//
 // Copyright 2017 The go-vgo Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // https://github.com/go-vgo/gt/blob/master/LICENSE

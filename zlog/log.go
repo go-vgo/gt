@@ -19,12 +19,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BurntSushi/toml"
+	"github.com/go-vgo/gt/conf"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+// Zlog zlog
 type Zlog struct {
 	// log.Logger
 }
@@ -46,11 +47,14 @@ type logConfig struct {
 
 var config logConfig
 
+// Init log
 func Init(tpath string) {
-	if _, err := toml.DecodeFile(tpath, &config); err != nil {
-		fmt.Println(err)
-		return
-	}
+	// if _, err := toml.DecodeFile(tpath, &config); err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	conf.Init(tpath, &config)
+	go conf.NewWatcher(tpath, &config)
 
 	go deleteOldLog()
 
@@ -65,7 +69,7 @@ func Init(tpath string) {
 }
 
 func deleteOldLog() {
-	fileDir, _ := conf()
+	fileDir, _ := confp()
 	var maxDays int64 = 28
 
 	if config.MaxDays != 0 {
@@ -92,6 +96,7 @@ func deleteOldLog() {
 	})
 }
 
+// InitDev init dev mode
 func InitDev() {
 	// logger, _ = zap.NewProduction()
 	logCfg := zap.NewDevelopmentConfig()
@@ -108,7 +113,7 @@ func InitDev() {
 	errSugar = sugar
 }
 
-func conf() (string, string) {
+func confp() (string, string) {
 	// var lpath, name string
 	var lpath, name string = "./log", "log"
 
@@ -123,8 +128,9 @@ func conf() (string, string) {
 	return lpath, name
 }
 
+// InitLog init log
 func InitLog() {
-	lpath, name := conf()
+	lpath, name := confp()
 
 	logTime := time.Now().Format("2006-01-02")
 	logPath := lpath + "/" + logTime + "/" + name + ".json"
@@ -146,10 +152,11 @@ func InitLog() {
 	sugar = logger.Sugar()
 }
 
+// InitErrLog init error log
 func InitErrLog() {
 	// lumberjack.Logger is already safe for concurrent use, so we don't need to
 	// lock it.
-	lpath, name := conf()
+	lpath, name := confp()
 
 	logTime := time.Now().Format("2006-01-02")
 	logPath := lpath + "/" + logTime + "/" + name + "_err.json"
@@ -176,6 +183,7 @@ func InitErrLog() {
 	errSugar = errLogger.Sugar()
 }
 
+// Print fmt.Sprintf
 func Print(args ...interface{}) string {
 	if len(args) == 0 {
 		return ""
@@ -183,6 +191,7 @@ func Print(args ...interface{}) string {
 	return fmt.Sprintf("%v ", args[0])
 }
 
+// Printf fmt.Sprintf
 func Printf(args ...interface{}) string {
 	if len(args) < 5 {
 		return ""
@@ -204,8 +213,9 @@ func (z *Zlog) Error(msg string, err error) {
 	)
 }
 
+// LogInfo info log
 func LogInfo(msg string, info ...string) {
-	var logInfo string = ""
+	var logInfo string
 	if len(info) > 0 {
 		logInfo = info[0]
 	}
@@ -216,8 +226,9 @@ func LogInfo(msg string, info ...string) {
 	)
 }
 
+// Error error log
 func Error(msg string, err ...error) {
-	var logErr error = nil
+	var logErr error
 	if len(err) > 0 {
 		logErr = err[0]
 	}
@@ -227,8 +238,9 @@ func Error(msg string, err ...error) {
 	)
 }
 
+// Fatal fatal log
 func Fatal(msg string, err ...error) {
-	var logErr error = nil
+	var logErr error
 	if len(err) > 0 {
 		logErr = err[0]
 	}
@@ -238,8 +250,9 @@ func Fatal(msg string, err ...error) {
 	)
 }
 
+// Panic panic log
 func Panic(msg string, err ...error) {
-	var logErr error = nil
+	var logErr error
 	if len(err) > 0 {
 		logErr = err[0]
 	}
@@ -249,6 +262,7 @@ func Panic(msg string, err ...error) {
 	)
 }
 
+// LogsError sugar error log
 func LogsError(msg string, err error) {
 	errSugar.Error(msg,
 		zlogTime,
@@ -256,6 +270,7 @@ func LogsError(msg string, err error) {
 	)
 }
 
+// SugarError sugar error log
 func SugarError(msg string, err error) {
 	errSugar.Error(msg,
 		zlogTime,
@@ -263,6 +278,7 @@ func SugarError(msg string, err error) {
 	)
 }
 
+// SugarFatal sugar fatal log
 func SugarFatal(msg string, err error) {
 	errSugar.Fatal(msg,
 		zlogTime,
@@ -270,6 +286,7 @@ func SugarFatal(msg string, err error) {
 	)
 }
 
+// SugarPanic sugar panic log
 func SugarPanic(msg string, err error) {
 	errSugar.Panic(msg,
 		zlogTime,
@@ -277,8 +294,9 @@ func SugarPanic(msg string, err error) {
 	)
 }
 
+// Info info log
 func Info(msg string, info ...string) {
-	var logInfo string = ""
+	var logInfo string
 	if len(info) > 0 {
 		logInfo = info[0]
 	}
@@ -289,8 +307,9 @@ func Info(msg string, info ...string) {
 	)
 }
 
+// Warn warn log
 func Warn(msg string, warn ...string) {
-	var logWarn string = ""
+	var logWarn string
 	if len(warn) > 0 {
 		logWarn = warn[0]
 	}
@@ -300,8 +319,9 @@ func Warn(msg string, warn ...string) {
 	)
 }
 
+// Debug debug log
 func Debug(msg string, debug ...string) {
-	var logDebug string = ""
+	var logDebug string
 	if len(debug) > 0 {
 		logDebug = debug[0]
 	}
@@ -311,6 +331,7 @@ func Debug(msg string, debug ...string) {
 	)
 }
 
+// Infoff info log
 func Infoff(msg string, fields ...zapcore.Field) {
 	logger.Info(msg,
 		zlogTime,
@@ -318,6 +339,7 @@ func Infoff(msg string, fields ...zapcore.Field) {
 	)
 }
 
+// LogError error log
 func LogError(msg string, err error) {
 	logger.Error(msg,
 		zlogTime,
@@ -325,6 +347,7 @@ func LogError(msg string, err error) {
 	)
 }
 
+// LogPanic panic log
 func LogPanic(msg string, err error) {
 	logger.Panic(msg,
 		zlogTime,
@@ -332,6 +355,7 @@ func LogPanic(msg string, err error) {
 	)
 }
 
+// LogFatal fatal log
 func LogFatal(msg string, err error) {
 	logger.Fatal(msg,
 		zlogTime,
@@ -339,6 +363,7 @@ func LogFatal(msg string, err error) {
 	)
 }
 
+// Infof infof log
 func Infof(msg, info string) {
 	sugar.Infof(msg,
 		zlogTime,
@@ -346,6 +371,7 @@ func Infof(msg, info string) {
 	)
 }
 
+// InfoW infow log
 func InfoW(msg, info string) {
 	sugar.Infow(msg,
 		zlogTime,
@@ -353,6 +379,7 @@ func InfoW(msg, info string) {
 	)
 }
 
+// Errorf errorf log
 func Errorf(msg string, err error) {
 	sugar.Errorf(msg,
 		zlogTime,
@@ -360,6 +387,7 @@ func Errorf(msg string, err error) {
 	)
 }
 
+// Warnf warnf log
 func Warnf(msg, warn string) {
 	sugar.Warnf(msg,
 		zlogTime,
