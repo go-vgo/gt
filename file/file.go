@@ -25,6 +25,8 @@ import (
 	"strings"
 )
 
+// FileExist checks whether a file or directory exists.
+// It returns false when the file or directory does not exist.
 func FileExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
@@ -91,6 +93,7 @@ func FileSha(file *os.File, args ...string) (string, error) {
 	return sha, nil
 }
 
+// Copy copies file from source to target path.
 func Copy(src, dest string) error {
 	// Gather file information to set back later.
 	si, err := os.Lstat(src)
@@ -132,6 +135,7 @@ func Copy(src, dest string) error {
 	return os.Chmod(dest, si.Mode())
 }
 
+// CopyFile copies file from source to target path.
 func CopyFile(src, dst string) (w int64, err error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -140,7 +144,7 @@ func CopyFile(src, dst string) (w int64, err error) {
 	defer srcFile.Close()
 	// if FileExist(dst) != true {
 	if !FileExist(dst) {
-		Wirtefile("", dst)
+		Writefile("", dst)
 	}
 	dstFile, err := os.Create(dst)
 	if err != nil {
@@ -166,6 +170,7 @@ func CopyOFile(srcName, dstName string) (written int64, err error) {
 	return io.Copy(dst, src)
 }
 
+// Readfile read file and return string
 func Readfile(fname string) (string, error) {
 	userFile := fname
 	fin, err := os.Open(userFile)
@@ -192,7 +197,18 @@ func Readfile(fname string) (string, error) {
 	return restr, nil
 }
 
-func Wirtefile(wirtestr string, userFile string) {
+// WriteFile writes data to a file named by filename.
+// If the file does not exist, WriteFile creates it
+// and its upper level paths.
+func WriteFile(filename string, data []byte) error {
+	os.MkdirAll(path.Dir(filename), os.ModePerm)
+	return ioutil.WriteFile(filename, data, 0655)
+}
+
+// Writefile writes data to a file named by filename.
+// If the file does not exist, WriteFile creates it
+// and its upper level paths.
+func Writefile(wirtestr string, userFile string) {
 	os.MkdirAll(path.Dir(userFile), os.ModePerm)
 
 	fout, err := os.Create(userFile)
