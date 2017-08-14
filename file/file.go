@@ -208,7 +208,7 @@ func WriteFile(filename string, data []byte) error {
 // Writefile writes data to a file named by filename.
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
-func Writefile(wirtestr string, userFile string) {
+func Writefile(writeStr string, userFile string) {
 	os.MkdirAll(path.Dir(userFile), os.ModePerm)
 
 	fout, err := os.Create(userFile)
@@ -218,7 +218,7 @@ func Writefile(wirtestr string, userFile string) {
 		return
 	}
 
-	fout.WriteString(wirtestr)
+	fout.WriteString(writeStr)
 }
 
 func ListFile(dirPth string, suffix string) (files []string, err error) {
