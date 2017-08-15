@@ -131,6 +131,10 @@ func confp() (string, string) {
 // InitLog init log
 func InitLog() {
 	lpath, name := confp()
+	maxDays := 28
+	if config.MaxDays != 0 {
+		maxDays = int(config.MaxDays)
+	}
 
 	logTime := time.Now().Format("2006-01-02")
 	logPath := lpath + "/" + logTime + "/" + name + ".json"
@@ -138,7 +142,7 @@ func InitLog() {
 		Filename:   logPath,
 		MaxSize:    500, // megabytes
 		MaxBackups: 3,
-		MaxAge:     28, // days
+		MaxAge:     maxDays, // days
 	})
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
@@ -157,6 +161,10 @@ func InitErrLog() {
 	// lumberjack.Logger is already safe for concurrent use, so we don't need to
 	// lock it.
 	lpath, name := confp()
+	maxDays := 28
+	if config.MaxDays != 0 {
+		maxDays = int(config.MaxDays)
+	}
 
 	logTime := time.Now().Format("2006-01-02")
 	logPath := lpath + "/" + logTime + "/" + name + "_err.json"
@@ -164,7 +172,7 @@ func InitErrLog() {
 		Filename:   logPath,
 		MaxSize:    500, // megabytes
 		MaxBackups: 3,
-		MaxAge:     28, // days
+		MaxAge:     maxDays, // days
 	})
 
 	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
