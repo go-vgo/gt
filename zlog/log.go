@@ -191,6 +191,21 @@ func InitErrLog() {
 	errSugar = errLogger.Sugar()
 }
 
+// Err zap.Error
+func Err(err error) zapcore.Field {
+	return zap.Error(err)
+}
+
+// Str zap.String
+func Str(key, val string) zapcore.Field {
+	return zap.String(key, val)
+}
+
+// Int zap.Int
+func Int(key string, val int) zapcore.Field {
+	return zap.Int(key, val)
+}
+
 // Print fmt.Sprintf
 func Print(args ...interface{}) string {
 	if len(args) == 0 {
@@ -243,6 +258,20 @@ func Error(msg string, err ...error) {
 	errLogger.Error(msg,
 		zlogTime,
 		zap.Error(logErr),
+	)
+}
+
+// Errorm more
+func Errorm(msg string, fields ...zapcore.Field) {
+	errLogger.Error(msg,
+		fields...,
+	)
+}
+
+// SugarErrorm more
+func SugarErrorm(msg string, fields ...zapcore.Field) {
+	errSugar.Error(msg,
+		fields,
 	)
 }
 
@@ -313,6 +342,16 @@ func Info(msg string, info ...string) {
 		zap.String("info", logInfo),
 	// fields,
 	)
+}
+
+// Infom more
+func Infom(msg string, fields ...zapcore.Field) {
+	logger.Info(msg, fields...)
+}
+
+// SugarInfom more
+func SugarInfom(msg string, fields ...zapcore.Field) {
+	sugar.Info(msg, fields)
 }
 
 // Warn warn log
