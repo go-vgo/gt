@@ -34,7 +34,8 @@ var (
 	logger, errLogger *zap.Logger
 	sugar, errSugar   *zap.SugaredLogger
 	zErr              error
-	zlogTime          zapcore.Field = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
+	// ZlogTime zlog time
+	ZlogTime zapcore.Field = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
 )
 
 type logConfig struct {
@@ -60,7 +61,7 @@ func Init(tpath string) {
 
 	if config.Mode == "dev" {
 		InitDev()
-		zlogTime = zap.Error(nil)
+		ZlogTime = zap.Error(nil)
 	} else {
 		InitLog()
 		// InitErrLog()
@@ -231,7 +232,7 @@ func Printf(args ...interface{}) string {
 
 func (z *Zlog) Error(msg string, err error) {
 	errLogger.Error(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -244,7 +245,7 @@ func LogInfo(msg string, info ...string) {
 	}
 
 	errLogger.Info(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("info", logInfo),
 	)
 }
@@ -256,7 +257,7 @@ func Error(msg string, err ...error) {
 		logErr = err[0]
 	}
 	errLogger.Error(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(logErr),
 	)
 }
@@ -282,7 +283,7 @@ func Fatal(msg string, err ...error) {
 		logErr = err[0]
 	}
 	errLogger.Fatal(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(logErr),
 	)
 }
@@ -294,7 +295,7 @@ func Panic(msg string, err ...error) {
 		logErr = err[0]
 	}
 	errLogger.Panic(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(logErr),
 	)
 }
@@ -302,7 +303,7 @@ func Panic(msg string, err ...error) {
 // LogsError sugar error log
 func LogsError(msg string, err error) {
 	errSugar.Error(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -310,7 +311,7 @@ func LogsError(msg string, err error) {
 // SugarError sugar error log
 func SugarError(msg string, err error) {
 	errSugar.Error(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -318,7 +319,7 @@ func SugarError(msg string, err error) {
 // SugarFatal sugar fatal log
 func SugarFatal(msg string, err error) {
 	errSugar.Fatal(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -326,7 +327,7 @@ func SugarFatal(msg string, err error) {
 // SugarPanic sugar panic log
 func SugarPanic(msg string, err error) {
 	errSugar.Panic(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -338,7 +339,7 @@ func Info(msg string, info ...string) {
 		logInfo = info[0]
 	}
 	logger.Info(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("info", logInfo),
 	// fields,
 	)
@@ -361,7 +362,7 @@ func Warn(msg string, warn ...string) {
 		logWarn = warn[0]
 	}
 	logger.Warn(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("warn", logWarn),
 	)
 }
@@ -373,7 +374,7 @@ func Debug(msg string, debug ...string) {
 		logDebug = debug[0]
 	}
 	logger.Debug(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("debug", logDebug),
 	)
 }
@@ -381,7 +382,7 @@ func Debug(msg string, debug ...string) {
 // Infoff info log
 func Infoff(msg string, fields ...zapcore.Field) {
 	logger.Info(msg,
-		zlogTime,
+		ZlogTime,
 		fields[0],
 	)
 }
@@ -389,7 +390,7 @@ func Infoff(msg string, fields ...zapcore.Field) {
 // LogError error log
 func LogError(msg string, err error) {
 	logger.Error(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -397,7 +398,7 @@ func LogError(msg string, err error) {
 // LogPanic panic log
 func LogPanic(msg string, err error) {
 	logger.Panic(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -405,7 +406,7 @@ func LogPanic(msg string, err error) {
 // LogFatal fatal log
 func LogFatal(msg string, err error) {
 	logger.Fatal(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -413,7 +414,7 @@ func LogFatal(msg string, err error) {
 // Infof infof log
 func Infof(msg, info string) {
 	sugar.Infof(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("info", info),
 	)
 }
@@ -421,7 +422,7 @@ func Infof(msg, info string) {
 // InfoW infow log
 func InfoW(msg, info string) {
 	sugar.Infow(msg,
-		zlogTime,
+		ZlogTime,
 		"info", info,
 	)
 }
@@ -429,7 +430,7 @@ func InfoW(msg, info string) {
 // Errorf errorf log
 func Errorf(msg string, err error) {
 	sugar.Errorf(msg,
-		zlogTime,
+		ZlogTime,
 		zap.Error(err),
 	)
 }
@@ -437,7 +438,7 @@ func Errorf(msg string, err error) {
 // Warnf warnf log
 func Warnf(msg, warn string) {
 	sugar.Warnf(msg,
-		zlogTime,
+		ZlogTime,
 		zap.String("warn", warn),
 	)
 }
