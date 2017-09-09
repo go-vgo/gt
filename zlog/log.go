@@ -207,6 +207,16 @@ func Int(key string, val int) zapcore.Field {
 	return zap.Int(key, val)
 }
 
+// Any zap.Any
+func Any(key string, val interface{}) zapcore.Field {
+	return zap.Any(key, val)
+}
+
+// Bool zap.Bool
+func Bool(key string, val bool) zapcore.Field {
+	return zap.Bool(key, val)
+}
+
 // Print fmt.Sprintf
 func Print(args ...interface{}) string {
 	if len(args) == 0 {
