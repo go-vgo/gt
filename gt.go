@@ -11,7 +11,7 @@
 package gt
 
 const (
-	version string = "v0.10.0.23, Mount Kailash!"
+	version string = "v0.10.0.37, Mount Kailash!"
 )
 
 // GetVersion get version
