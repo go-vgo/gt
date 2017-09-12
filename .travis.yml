@@ -3,14 +3,14 @@ language: go
 go:
   - 1.7.x
   - 1.8.x
-  - 1.9
+  - 1.9.x
   - tip
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   # - go get -u github.com/BurntSushi/toml
   # - go get -u github.com/fsnotify/fsnotify
-  # - go get -u github.com/coreos/etcd  
+  - go get -u github.com/coreos/etcd  
   # - go get -u google.golang.org/grpc 
   # - go get -u github.com/coreos/etcd/clientv3
   # - go get -u github.com/go-kit/kit/log 

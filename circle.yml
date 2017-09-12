@@ -17,6 +17,12 @@ machine:
 #   pre:
 #     - sudo apt-get update
 #     - sudo apt-get install libx11-dev
+dependencies:
+  override:
+    # './...' is a relative pattern which means all subdirectories
+    - go get -u github.com/coreos/etcd
+    # - go get -u github.com/go-ego/riot
+    - go get -t -d -v ./...
 
 # script:
 #   - ./go.test.sh
