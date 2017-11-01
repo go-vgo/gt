@@ -19,6 +19,7 @@ import (
 	"hash"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -200,25 +201,39 @@ func Readfile(fname string) (string, error) {
 // WriteFile writes data to a file named by filename.
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
-func WriteFile(filename string, data []byte) error {
-	os.MkdirAll(path.Dir(filename), os.ModePerm)
-	return ioutil.WriteFile(filename, data, 0655)
+func WriteFile(fileName string, data []byte) error {
+	os.MkdirAll(path.Dir(fileName), os.ModePerm)
+	return ioutil.WriteFile(fileName, data, 0655)
 }
 
 // Writefile writes data to a file named by filename.
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
-func Writefile(writeStr string, userFile string) {
-	os.MkdirAll(path.Dir(userFile), os.ModePerm)
+func Writefile(fileName, writeStr string) {
+	os.MkdirAll(path.Dir(fileName), os.ModePerm)
 
-	fout, err := os.Create(userFile)
+	fout, err := os.Create(fileName)
 	defer fout.Close()
 	if err != nil {
-		fmt.Println(userFile, err)
+		log.Println("write file"+fileName, err)
 		return
 	}
 
 	fout.WriteString(writeStr)
+}
+
+// AppendToFile append file
+func AppendToFile(fileName, content string) error {
+	// 以只写的模式，打开文件
+	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println("file create failed. err: " + err.Error())
+	} else {
+		n, _ := f.Seek(0, os.SEEK_END)
+		_, err = f.WriteAt([]byte(content), n)
+	}
+	defer f.Close()
+	return err
 }
 
 func ListFile(dirPth string, suffix string) (files []string, err error) {
