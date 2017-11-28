@@ -10,11 +10,39 @@
 
 package gt
 
+import (
+	"log"
+)
+
 const (
-	version string = "v0.10.0.42, Mount Kailash!"
+	version string = "v0.10.0.43, Mount Kailash!"
 )
 
 // GetVersion get version
 func GetVersion() string {
 	return version
+}
+
+// Try handler error
+func Try(fun func(), handler func(interface{})) {
+	defer func() {
+		if err := recover(); err != nil {
+			handler(err)
+		}
+	}()
+	fun()
+}
+
+// CheckErr check error
+func CheckErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+// LogErr println error
+func LogErr(err error) {
+	if err != nil {
+		log.Println("error", err)
+	}
 }

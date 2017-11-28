@@ -15,6 +15,7 @@ package file
 import (
 	"crypto/sha1"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"hash"
 	"io"
@@ -42,6 +43,17 @@ func PathExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+// SearchFile Search a file in paths.
+func SearchFile(filename string, paths ...string) (fullpath string, err error) {
+	for _, path := range paths {
+		if fullpath = filepath.Join(path, filename); FileExist(fullpath) {
+			return
+		}
+	}
+	err = errors.New(fullpath + " not found in paths")
+	return
 }
 
 // FileSize returns file size in bytes and possible error.
