@@ -23,6 +23,7 @@ import (
 	"time"
 )
 
+// Map a string map
 type Map map[string]interface{}
 
 // Get http get
@@ -144,6 +145,7 @@ var (
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
+// GetRandomUserAgent get random UserAgent
 func GetRandomUserAgent(args ...[]string) string {
 	if len(args) > 0 {
 		return userAgent[r.Intn(len(args[0]))]
@@ -151,6 +153,7 @@ func GetRandomUserAgent(args ...[]string) string {
 	return userAgent[r.Intn(len(userAgent))]
 }
 
+// Do http.Do
 func Do(url string, out int, method string, args ...[]string) (*http.Response, error) {
 	// POST
 	// var doMethod = "GET"
@@ -186,6 +189,7 @@ func Do(url string, out int, method string, args ...[]string) (*http.Response, e
 	return res, nil
 }
 
+// DoPost http.Do post
 func DoPost(url string, out int, args ...[]string) (*http.Response, error) {
 
 	if len(args) > 0 {
@@ -197,6 +201,7 @@ func DoPost(url string, out int, args ...[]string) (*http.Response, error) {
 	return res, err
 }
 
+// DoGet http.Do get
 func DoGet(url string, out int, args ...[]string) (*http.Response, error) {
 
 	if len(args) > 0 {
