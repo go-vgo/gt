@@ -34,6 +34,7 @@ func FileExist(filename string) bool {
 	return err == nil || os.IsExist(err)
 }
 
+// PathExists path is exist
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -65,6 +66,7 @@ func FileSize(file string) (int64, error) {
 	return f.Size(), nil
 }
 
+// OFileSha open file return sha
 func OFileSha(filepath string, args ...string) (string, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -87,6 +89,7 @@ func OFileSha(filepath string, args ...string) (string, error) {
 	return sha, nil
 }
 
+// FileSha file sha
 func FileSha(file *os.File, args ...string) (string, error) {
 	var h hash.Hash
 
@@ -168,6 +171,7 @@ func CopyFile(src, dst string) (w int64, err error) {
 	return io.Copy(dstFile, srcFile)
 }
 
+// CopyOFile copy file
 func CopyOFile(srcName, dstName string) (written int64, err error) {
 	src, err := os.Open(srcName)
 	if err != nil {
@@ -192,7 +196,7 @@ func Readfile(fname string) (string, error) {
 		fmt.Println(userFile, err)
 		return "", err
 	}
-	var restr string = ""
+	var restr string
 
 	buf := make([]byte, 1024)
 	for {
@@ -248,6 +252,7 @@ func AppendToFile(fileName, content string) error {
 	return err
 }
 
+// ListFile file list
 func ListFile(dirPth string, suffix string) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dir, err := ioutil.ReadDir(dirPth)
@@ -267,6 +272,7 @@ func ListFile(dirPth string, suffix string) (files []string, err error) {
 	return files, nil
 }
 
+// ListDir dir list
 func ListDir(dirPth string, suffix string) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dir, err := ioutil.ReadDir(dirPth)
@@ -286,6 +292,7 @@ func ListDir(dirPth string, suffix string) (files []string, err error) {
 	return files, nil
 }
 
+// WalkFile file walk
 func WalkFile(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
@@ -302,6 +309,7 @@ func WalkFile(dirPth, suffix string) (files []string, err error) {
 	return files, err
 }
 
+// WalkDir dir walk
 func WalkDir(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)

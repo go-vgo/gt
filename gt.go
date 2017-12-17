@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	version string = "v0.10.0.43, Mount Kailash!"
+	version string = "v0.10.0.47, Mount Kailash!"
 )
 
 // GetVersion get version
