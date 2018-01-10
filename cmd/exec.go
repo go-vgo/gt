@@ -43,14 +43,14 @@ func ExecSh(str string, args ...string) (string, error) {
 	return out.String(), err
 }
 
-// ExecCmd exex command
+// ExecCmd exex command stdout
 func ExecCmd(cmdName string, params []string) bool {
 	cmd := exec.Command(cmdName, params...)
 
 	stdout, err := cmd.StdoutPipe()
 
 	if err != nil {
-		log.Println(err)
+		log.Println("cmd.StdoutPipe error", err)
 		return false
 	}
 	cmd.Start()

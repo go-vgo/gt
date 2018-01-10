@@ -11,7 +11,6 @@
 package conf
 
 import (
-	"fmt"
 	"log"
 	"sync"
 	// "time"
@@ -33,7 +32,7 @@ func NewWatcher(paths string, v interface{}) {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Println("event:", event)
+				log.Println("watcher events:", event)
 				// if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 				// 	log.Println("watcher.Events: ignore CHMOD event:", event)
 				// 	continue
@@ -42,11 +41,11 @@ func NewWatcher(paths string, v interface{}) {
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					// log.Println("modified file:", event.Name)
 					Init(paths, v)
-					// log.Println("watch-config...", config)
-					log.Println("watch-config...", v)
+					// log.Println("watch config...", config)
+					log.Println("watch config...", v)
 				}
 			case err := <-watcher.Errors:
-				log.Println("error:", err)
+				log.Println("watcher.Errors error:", err)
 			}
 		}
 	}()
@@ -67,7 +66,7 @@ var (
 func Init(tpath string, v interface{}) {
 	configLock.Lock()
 	if _, err := toml.DecodeFile(tpath, v); err != nil {
-		fmt.Println(err)
+		log.Println("toml.DecodeFile error", err)
 		return
 	}
 	configLock.Unlock()
