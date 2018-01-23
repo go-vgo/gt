@@ -27,6 +27,7 @@ const (
 	CallerNum = 5
 )
 
+// LogFormat log format
 type LogFormat string
 
 const (
@@ -50,6 +51,7 @@ func init() {
 	}
 }
 
+// NewKitLogger new kit logger
 func NewKitLogger(opt LogOption, format ...LogFormat) (*KitLogger, error) {
 	var (
 		ioWriter *LogWriter
@@ -75,7 +77,7 @@ func NewKitLogger(opt LogOption, format ...LogFormat) (*KitLogger, error) {
 			}
 			tmpLog = log.NewLogfmtLogger(ioWriter)
 		case NoFormat:
-			ioWriter = &LogWriter{File: nil}
+			// ioWriter = &LogWriter{File: nil}
 			tmpLog = log.NewNopLogger()
 		default:
 			panic("log format type is invalid")
@@ -105,6 +107,7 @@ func NewKitLogger(opt LogOption, format ...LogFormat) (*KitLogger, error) {
 	return &KitLogger{Logger: tmpLog}, nil
 }
 
+// GlobalLog global log
 func GlobalLog() *KitLogger {
 	return lg
 }
@@ -146,6 +149,7 @@ func SetGlobalLogWithLog(logger log.Logger, levelConf ...level.Option) {
 
 var lg *KitLogger
 
+// KitLogger kit logger
 type KitLogger struct {
 	log.Logger
 	// *levels.Levels
@@ -153,6 +157,7 @@ type KitLogger struct {
 	sync     bool
 }
 
+// Close close the kit logger
 func (gklog *KitLogger) Close() error {
 	if gklog.ioWriter != nil {
 		return gklog.ioWriter.Close()
@@ -160,16 +165,19 @@ func (gklog *KitLogger) Close() error {
 	return nil
 }
 
+// Debug debug
 func Debug(args ...interface{}) {
 	tmpLog := log.With(lg.Logger, "caller", log.Caller(CallerNum), "level", level.DebugValue())
 	logPrint(tmpLog, args)
 }
 
+// Debugf debugf log
 func Debugf(args ...interface{}) {
 	tmpLog := log.With(lg.Logger, "caller", log.Caller(CallerNum), "level", level.DebugValue())
 	logPrintf(tmpLog, args)
 }
 
+// Info info log
 func Info(args ...interface{}) {
 	tmpLog := log.With(lg.Logger, "caller", log.Caller(CallerNum), "level", level.InfoValue())
 	logPrint(tmpLog, args)
@@ -241,6 +249,7 @@ func WrapLogLevel(levelsSets []string) []level.Option {
 	return kitOpts
 }
 
+// LogOption log option
 type LogOption struct {
 	// unit in minutes
 	SegmentationThreshold int    `toml:"threshold"`
