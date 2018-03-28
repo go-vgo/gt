@@ -20,10 +20,10 @@ import (
 )
 
 // NewWatcher new fsnotify watcher
-func NewWatcher(paths string, v interface{}) {
+func NewWatcher(paths string, config interface{}) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("fsnotify.NewWatcher(): ", err)
 	}
 	defer watcher.Close()
 
@@ -32,20 +32,20 @@ func NewWatcher(paths string, v interface{}) {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Println("watcher events:", event)
+				log.Println("watcher events: ", event)
 				// if event.Op&fsnotify.Chmod == fsnotify.Chmod {
-				// 	log.Println("watcher.Events: ignore CHMOD event:", event)
+				// 	log.Println("watcher.Events: ignore CHMOD event: ", event)
 				// 	continue
 				// }
 
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					// log.Println("modified file:", event.Name)
-					Init(paths, v)
-					// log.Println("watch config...", config)
-					log.Println("watch config...", v)
+					// log.Println("modified file: ", event.Name)
+					Init(paths, config)
+					// log.Println("watch config... ", config)
+					log.Println("watch config... ", config)
 				}
 			case err := <-watcher.Errors:
-				log.Println("watcher.Errors error:", err)
+				log.Println("watcher.Errors error: ", err)
 			}
 		}
 	}()
@@ -59,15 +59,15 @@ func NewWatcher(paths string, v interface{}) {
 
 var (
 	// config     Config
-	configLock = new(sync.RWMutex)
+	confLock = new(sync.RWMutex)
 )
 
 // Init toml config
-func Init(tpath string, v interface{}) {
-	configLock.Lock()
-	if _, err := toml.DecodeFile(tpath, v); err != nil {
-		log.Println("toml.DecodeFile error", err)
+func Init(tpath string, config interface{}) {
+	confLock.Lock()
+	if _, err := toml.DecodeFile(tpath, config); err != nil {
+		log.Println("toml.DecodeFile error ", err)
 		return
 	}
-	configLock.Unlock()
+	confLock.Unlock()
 }
