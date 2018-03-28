@@ -104,7 +104,7 @@ func InitDev() {
 	logCfg.Sampling = nil
 	logger, zErr = logCfg.Build()
 	if zErr != nil {
-		log.Fatal("NewDevelopmentConfig ERR:", zErr)
+		log.Fatal("zap.NewDevelopmentConfig error: ", zErr)
 	}
 
 	errLogger = logger

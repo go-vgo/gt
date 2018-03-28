@@ -97,7 +97,7 @@ func NewKitLogger(opt LogOption, format ...LogFormat) (*KitLogger, error) {
 	case "error", "crit":
 		kitOpt = level.AllowError()
 	default:
-		panic(fmt.Sprintf("logLevel(%s) no in [info|debug|warn|error]", opt.LogLevel))
+		panic(fmt.Sprintf("logLevel(%s) no in [info|debug|warn|error] ", opt.LogLevel))
 	}
 	tmpLog = level.NewFilter(tmpLog, kitOpt)
 

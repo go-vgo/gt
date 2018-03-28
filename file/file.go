@@ -231,7 +231,7 @@ func Writefile(fileName, writeStr string) {
 	fout, err := os.Create(fileName)
 	defer fout.Close()
 	if err != nil {
-		log.Println("write file"+fileName, err)
+		log.Println("write file "+fileName, err)
 		return
 	}
 

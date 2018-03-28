@@ -31,7 +31,7 @@ func Get(apiUrl string, params url.Values) (rs []byte, err error) {
 	var Url *url.URL
 	Url, err = url.Parse(apiUrl)
 	if err != nil {
-		log.Printf("analytic url error:\r\n%v", err)
+		log.Printf("analytic url error: \r\n %v", err)
 		return nil, err
 	}
 
@@ -39,7 +39,7 @@ func Get(apiUrl string, params url.Values) (rs []byte, err error) {
 	Url.RawQuery = params.Encode()
 	resp, err := http.Get(Url.String())
 	if err != nil {
-		log.Println("http get error:", err)
+		log.Println("http get error: ", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -163,7 +163,7 @@ func Do(url string, out int, method string, args ...[]string) (*http.Response, e
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		log.Println("http.NewRequest error...", err)
+		log.Println("http.NewRequest error... ", err)
 	}
 	// fmt.Println("req", req)
 
@@ -185,7 +185,7 @@ func Do(url string, out int, method string, args ...[]string) (*http.Response, e
 		return res, err
 	}
 
-	// log.Println("res...", res)
+	// log.Println("res... ", res)
 	return res, nil
 }
 
