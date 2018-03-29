@@ -21,6 +21,11 @@ import (
 
 // NewWatcher new fsnotify watcher
 func NewWatcher(paths string, config interface{}) {
+	Watch(paths, config)
+}
+
+// Watch new fsnotify watcher
+func Watch(paths string, config interface{}) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal("fsnotify.NewWatcher(): ", err)
