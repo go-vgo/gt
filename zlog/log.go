@@ -33,7 +33,7 @@ type Zlog struct {
 var (
 	logger, errLogger *zap.Logger
 	sugar, errSugar   *zap.SugaredLogger
-	zErr              error
+	zapErr            error
 	// ZlogTime zlog time
 	ZlogTime zapcore.Field = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
 )
@@ -102,9 +102,9 @@ func InitDev() {
 	// logger, _ = zap.NewProduction()
 	logCfg := zap.NewDevelopmentConfig()
 	logCfg.Sampling = nil
-	logger, zErr = logCfg.Build()
-	if zErr != nil {
-		log.Fatal("zap.NewDevelopmentConfig error: ", zErr)
+	logger, zapErr = logCfg.Build()
+	if zapErr != nil {
+		log.Fatal("zap.NewDevelopmentConfig error: ", zapErr)
 	}
 
 	errLogger = logger
