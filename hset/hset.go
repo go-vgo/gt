@@ -116,6 +116,7 @@ func (hset *Hset) Same(other Set) bool {
 	if hset.Len() != other.Len() {
 		return false
 	}
+
 	for key := range hset.items {
 		if !other.Contains(key) {
 			return false
@@ -131,6 +132,7 @@ func (hset *Hset) String() string {
 	for k := range hset.items {
 		items = append(items, fmt.Sprintf("%v", k))
 	}
+
 	str += strings.Join(items, ", ")
 	return str
 }

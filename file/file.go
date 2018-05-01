@@ -13,18 +13,19 @@ package file
 // package gt
 
 import (
-	"crypto/sha1"
-	"crypto/sha256"
 	"errors"
 	"fmt"
 	"hash"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
+
+	"crypto/sha1"
+	"crypto/sha256"
+	"io/ioutil"
+	"path/filepath"
 )
 
 // FileExist checks whether a file or directory exists.

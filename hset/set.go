@@ -39,5 +39,6 @@ func (set *Hset) FromJSON(data []byte) error {
 		set.Clear()
 		set.Add(elements...)
 	}
+
 	return err
 }

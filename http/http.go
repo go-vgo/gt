@@ -13,17 +13,18 @@ package http
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"log"
+	"os"
+	"time"
+
+	"io/ioutil"
 	"math/rand"
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
-	"time"
 )
 
-// Map a string map
+// Map a [string]interface{} map
 type Map map[string]interface{}
 
 // Get http get
@@ -43,6 +44,7 @@ func Get(apiUrl string, params url.Values) (rs []byte, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	return ioutil.ReadAll(resp.Body)
 }
 
@@ -63,9 +65,9 @@ func Post(apiUrl string, params url.Values, args ...int) (rs []byte, err error) 
 	if err != nil {
 		return nil, err
 	}
-
 	// fmt.Println("http:", resp)
 	defer resp.Body.Close()
+
 	return ioutil.ReadAll(resp.Body)
 }
 
@@ -128,7 +130,7 @@ func PostFile(filename, targetUrl, upParam string) (string, error) {
 		return "", err
 	}
 
-	log.Println(resp.Status)
+	log.Println("resp.Status is: ", resp.Status)
 	// fmt.Println(string(respBody))
 
 	return string(respBody), nil
@@ -163,7 +165,7 @@ func Do(url string, out int, method string, args ...[]string) (*http.Response, e
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		log.Println("http.NewRequest error... ", err)
+		log.Println("http.NewRequest error...: ", err)
 	}
 	// fmt.Println("req", req)
 

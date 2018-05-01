@@ -50,7 +50,7 @@ func ExecCmd(cmdName string, params []string) bool {
 	stdout, err := cmd.StdoutPipe()
 
 	if err != nil {
-		log.Println("cmd.StdoutPipe error ", err)
+		log.Println("cmd.StdoutPipe error: ", err)
 		return false
 	}
 	cmd.Start()
