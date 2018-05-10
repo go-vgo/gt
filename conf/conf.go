@@ -15,7 +15,6 @@ import (
 	"sync"
 	// "time"
 
-	"github.com/BurntSushi/toml"
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -47,7 +46,7 @@ func Watch(paths string, config interface{}) {
 					// log.Println("modified file: ", event.Name)
 					Init(paths, config)
 					// log.Println("watch config... ", config)
-					log.Println("watch config... ", config)
+					log.Println("watch config: ", config)
 				}
 			case err := <-watcher.Errors:
 				log.Println("watcher.Errors error: ", err)
@@ -57,7 +56,7 @@ func Watch(paths string, config interface{}) {
 
 	err = watcher.Add(paths)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("watcher.Add: ", err)
 	}
 	<-done
 }
@@ -66,13 +65,3 @@ var (
 	// config     Config
 	confLock = new(sync.RWMutex)
 )
-
-// Init toml config
-func Init(tpath string, config interface{}) {
-	confLock.Lock()
-	if _, err := toml.DecodeFile(tpath, config); err != nil {
-		log.Println("toml.DecodeFile error ", err)
-		return
-	}
-	confLock.Unlock()
-}
