@@ -25,7 +25,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// Zlog zlog
+// Zlog zlog struct
 type Zlog struct {
 	// log.Logger
 }
@@ -33,9 +33,10 @@ type Zlog struct {
 var (
 	logger, errLogger *zap.Logger
 	sugar, errSugar   *zap.SugaredLogger
-	zapErr            error
-	// ZlogTime zlog time
-	ZlogTime zapcore.Field = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
+
+	zapErr error
+	// ZlogTime zlog time, zapcore.Field
+	ZlogTime = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
 )
 
 type logConfig struct {
@@ -48,14 +49,14 @@ type logConfig struct {
 
 var config logConfig
 
-// Init log
+// Init zap log and config
 func Init(tpath string) {
 	// if _, err := toml.DecodeFile(tpath, &config); err != nil {
 	// 	fmt.Println(err)
 	// 	return
 	// }
 	conf.Init(tpath, &config)
-	go conf.NewWatcher(tpath, &config)
+	go conf.Watch(tpath, &config)
 
 	go deleteOldLog()
 
@@ -70,17 +71,19 @@ func Init(tpath string) {
 }
 
 func deleteOldLog() {
-	fileDir, _ := confp()
+	fileDir, _ := confPath()
 	var maxDays int64 = 28
 
 	if config.MaxDays != 0 {
 		maxDays = config.MaxDays
 	}
 
-	filepath.Walk(fileDir, func(path string, info os.FileInfo, err error) (returnErr error) {
+	filepath.Walk(fileDir, func(path string, info os.FileInfo, err error) (
+		returnErr error) {
 		defer func() {
 			if r := recover(); r != nil {
-				returnErr = fmt.Errorf("Unable to delete old log '%s', error: %+v", path, r)
+				returnErr = fmt.Errorf("Unable to delete old log '%s', error: %+v",
+					path, r)
 			}
 		}()
 
@@ -114,7 +117,7 @@ func InitDev() {
 	errSugar = sugar
 }
 
-func confp() (string, string) {
+func confPath() (string, string) {
 	// var lpath, name string
 	var lpath, name string = "./log", "log"
 
@@ -129,9 +132,9 @@ func confp() (string, string) {
 	return lpath, name
 }
 
-// InitLog init log
+// InitLog init log lumberjack
 func InitLog() {
-	lpath, name := confp()
+	lpath, name := confPath()
 	maxDays := 28
 	if config.MaxDays != 0 {
 		maxDays = int(config.MaxDays)
@@ -157,11 +160,11 @@ func InitLog() {
 	sugar = logger.Sugar()
 }
 
-// InitErrLog init error log
+// InitErrLog init error log and lumberjack
 func InitErrLog() {
 	// lumberjack.Logger is already safe for concurrent use, so we don't need to
 	// lock it.
-	lpath, name := confp()
+	lpath, name := confPath()
 	maxDays := 28
 	if config.MaxDays != 0 {
 		maxDays = int(config.MaxDays)
