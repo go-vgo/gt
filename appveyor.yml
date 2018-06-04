@@ -28,7 +28,7 @@ install:
 build_script:
   # We need to disable firewall - https://github.com/appveyor/ci/issues/1579#issuecomment-309830648
   - ps: Disable-NetFirewallRule -DisplayName 'File and Printer Sharing (SMB-Out)'
-  - cd c:\gopath\src\github.com\go-ego\riot
+  - cd c:\gopath\src\github.com\go-vgo\gt
   - git branch
   - go get -t ./...
 
@@ -36,6 +36,6 @@ build_script:
 test_script:
   # Unit tests
   - ps: Add-AppveyorTest "Unit Tests" -Outcome Running
-  # - go test -u github.com/go-ego/riot/...
-  - go test -v github.com/go-ego/riot/...
+  # - go test -u github.com/go-vgo/gt/...
+  - go test -v github.com/go-vgo/gt/...
   - ps: Update-AppveyorTest "Unit Tests" -Outcome Passed
