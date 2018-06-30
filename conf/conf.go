@@ -18,6 +18,11 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+var (
+	// config     Config
+	confLock = new(sync.RWMutex)
+)
+
 // NewWatcher new fsnotify watcher
 func NewWatcher(paths string, config interface{}) {
 	Watch(paths, config)
@@ -60,8 +65,3 @@ func Watch(paths string, config interface{}) {
 	}
 	<-done
 }
-
-var (
-	// config     Config
-	confLock = new(sync.RWMutex)
-)

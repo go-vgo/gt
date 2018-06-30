@@ -19,9 +19,9 @@ import (
 )
 
 // Init toml config
-func Init(tpath string, config interface{}) {
+func Init(fliePath string, config interface{}) {
 	confLock.Lock()
-	if _, err := toml.DecodeFile(tpath, config); err != nil {
+	if _, err := toml.DecodeFile(filePath, config); err != nil {
 		log.Println("toml.DecodeFile error: ", err)
 		return
 	}

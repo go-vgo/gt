@@ -20,9 +20,9 @@ import (
 )
 
 // Init toml config
-func Init(fileName string, config interface{}) {
+func Init(filePath string, config interface{}) {
 	confLock.Lock()
-	fileBytes, err := ioutil.ReadFile(fileName)
+	fileBytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		log.Fatal("ioutil.ReadFile error: ", err)
 	}
