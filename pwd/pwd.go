@@ -19,31 +19,31 @@ import (
 	"time"
 )
 
-// PwGen gen password
+// PwGen generate the password
 func PwGen(pass string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
 	return Base64Encode(Sha1(Md5(pass)+salt) + salt)
 }
 
 // Base64Encode base64 encode
-func Base64Encode(s string) string {
-	return base64.StdEncoding.EncodeToString([]byte(s))
+func Base64Encode(str string) string {
+	return base64.StdEncoding.EncodeToString([]byte(str))
 }
 
 // Base64Decode base64 decode
-func Base64Decode(s string) string {
-	res, _ := base64.StdEncoding.DecodeString(s)
+func Base64Decode(str string) string {
+	res, _ := base64.StdEncoding.DecodeString(str)
 	return string(res)
 }
 
-// Sha1 sha1
-func Sha1(s string) string {
-	return fmt.Sprintf("%x", sha1.Sum([]byte(s)))
+// Sha1 sha1.Sum
+func Sha1(str string) string {
+	return fmt.Sprintf("%x", sha1.Sum([]byte(str)))
 }
 
-// Md5 md5
-func Md5(s string) string {
-	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
+// Md5 md5.Sum
+func Md5(str string) string {
+	return fmt.Sprintf("%x", md5.Sum([]byte(str)))
 }
 
 // PwCheck password check
@@ -52,6 +52,7 @@ func PwCheck(pwd, saved string) bool {
 	if len(saved) < 4 {
 		return false
 	}
+
 	salt := saved[len(saved)-4:]
 	return Sha1(Md5(pwd)+salt)+salt == saved
 }
