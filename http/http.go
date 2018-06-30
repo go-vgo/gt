@@ -192,10 +192,14 @@ func Do(url string, out int, method string, args ...[]string) (*http.Response, e
 }
 
 // DoPost http.Do post
-func DoPost(url string, out int, args ...[]string) (*http.Response, error) {
-
+func DoPost(url string, args ...interface{}) (*http.Response, error) {
+	var out int
 	if len(args) > 0 {
-		res, err := Do(url, out, "POST", args[0])
+		out = args[0].(int)
+	}
+
+	if len(args) > 1 {
+		res, err := Do(url, out, "POST", args[0].([]string))
 		return res, err
 	}
 
@@ -204,10 +208,14 @@ func DoPost(url string, out int, args ...[]string) (*http.Response, error) {
 }
 
 // DoGet http.Do get
-func DoGet(url string, out int, args ...[]string) (*http.Response, error) {
-
+func DoGet(url string, args ...interface{}) (*http.Response, error) {
+	var out int
 	if len(args) > 0 {
-		res, err := Do(url, out, "GET", args[0])
+		out = args[0].(int)
+	}
+
+	if len(args) > 1 {
+		res, err := Do(url, out, "GET", args[1].([]string))
 		return res, err
 	}
 
