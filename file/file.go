@@ -159,10 +159,12 @@ func CopyFile(src, dst string) (w int64, err error) {
 		return
 	}
 	defer srcFile.Close()
+
 	// if FileExist(dst) != true {
 	if !FileExist(dst) {
 		Writefile("", dst)
 	}
+
 	dstFile, err := os.Create(dst)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -179,6 +181,7 @@ func CopyOFile(srcName, dstName string) (written int64, err error) {
 		return
 	}
 	defer src.Close()
+
 	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -189,14 +192,15 @@ func CopyOFile(srcName, dstName string) (written int64, err error) {
 }
 
 // Readfile read file and return string
-func Readfile(fname string) (string, error) {
-	userFile := fname
+func Readfile(userFile string) (string, error) {
+	// userFile := fname
 	fin, err := os.Open(userFile)
-	defer fin.Close()
 	if err != nil {
-		fmt.Println(userFile, err)
+		log.Println("os.Open: ", userFile, err)
 		return "", err
 	}
+	defer fin.Close()
+
 	var restr string
 
 	buf := make([]byte, 1024)
@@ -230,11 +234,11 @@ func Writefile(fileName, writeStr string) {
 	os.MkdirAll(path.Dir(fileName), os.ModePerm)
 
 	fout, err := os.Create(fileName)
-	defer fout.Close()
 	if err != nil {
 		log.Println("write file "+fileName, err)
 		return
 	}
+	defer fout.Close()
 
 	fout.WriteString(writeStr)
 }

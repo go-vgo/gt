@@ -125,6 +125,7 @@ func PostFile(filename, targetUrl, upParam string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
+
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
