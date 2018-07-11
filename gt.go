@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	version string = "v0.10.0.63, Mount Kailash!"
+	version string = "v0.10.0.78, Mount Kailash!"
 )
 
 // GetVersion get version
@@ -43,6 +43,6 @@ func CheckErr(err error) {
 // LogErr println error
 func LogErr(err error) {
 	if err != nil {
-		log.Println("error", err)
+		log.Println("error: ", err)
 	}
 }

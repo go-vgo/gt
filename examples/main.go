@@ -23,6 +23,6 @@ func main() {
 	}
 	fmt.Println(sha)
 
-	filesize, err := file.FileSize("../file/flie.go")
-	fmt.Println(filesize, err)
+	fileSize, err := file.FileSize("../file/flie.go")
+	fmt.Println(fileSize, err)
 }
