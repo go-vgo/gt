@@ -100,14 +100,14 @@ func PostFile(filename, targetUrl, upParam string) (string, error) {
 	// uploadfile
 	fileWriter, err := bodyWriter.CreateFormFile(upParam, filename)
 	if err != nil {
-		log.Println("error writing to buffer")
+		log.Println("error writing to buffer.")
 		return "", err
 	}
 
 	// openfile
 	fh, err := os.Open(filename)
 	if err != nil {
-		log.Println("error opening file")
+		log.Println("error opening file.")
 		return "", err
 	}
 
