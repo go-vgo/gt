@@ -28,9 +28,9 @@ import (
 	"path/filepath"
 )
 
-// FileExist checks whether a file or directory exists.
+// Exist checks whether a file or directory exists.
 // It returns false when the file or directory does not exist.
-func FileExist(filename string) bool {
+func Exist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
 }
@@ -50,7 +50,7 @@ func PathExists(path string) (bool, error) {
 // SearchFile Search a file in paths.
 func SearchFile(filename string, paths ...string) (fullpath string, err error) {
 	for _, path := range paths {
-		if fullpath = filepath.Join(path, filename); FileExist(fullpath) {
+		if fullpath = filepath.Join(path, filename); Exist(fullpath) {
 			return
 		}
 	}
@@ -58,8 +58,8 @@ func SearchFile(filename string, paths ...string) (fullpath string, err error) {
 	return
 }
 
-// FileSize returns file size in bytes and possible error.
-func FileSize(file string) (int64, error) {
+// Size returns file size in bytes and possible error.
+func Size(file string) (int64, error) {
 	f, err := os.Stat(file)
 	if err != nil {
 		return 0, err
@@ -67,31 +67,25 @@ func FileSize(file string) (int64, error) {
 	return f.Size(), nil
 }
 
-// OFileSha open file return sha
-func OFileSha(filepath string, args ...string) (string, error) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		return "", err
+// Sha open file return sha
+func Sha(filePath string, args ...string) (sha string, err error) {
+	file, fsErr := os.Open(filePath)
+	if fsErr != nil {
+		return "", fsErr
 	}
 	defer file.Close()
 
-	var sha string
-
 	if len(args) > 0 {
-		sha, err = FileSha(file, args[0])
-	} else {
-		sha, err = FileSha(file)
+		sha, err = IoSha(file, args[0])
+		return
 	}
 
-	if err != nil {
-		return "", err
-	}
-
-	return sha, nil
+	sha, err = IoSha(file)
+	return
 }
 
-// FileSha file sha
-func FileSha(file *os.File, args ...string) (string, error) {
+// IoSha file sha
+func IoSha(fileIO *os.File, args ...string) (string, error) {
 	var h hash.Hash
 
 	if len(args) > 0 {
@@ -100,7 +94,7 @@ func FileSha(file *os.File, args ...string) (string, error) {
 		h = sha1.New()
 	}
 
-	_, err := io.Copy(h, file)
+	_, err := io.Copy(h, fileIO)
 	if err != nil {
 		return "", err
 	}
@@ -160,8 +154,8 @@ func CopyFile(src, dst string) (w int64, err error) {
 	}
 	defer srcFile.Close()
 
-	// if FileExist(dst) != true {
-	if !FileExist(dst) {
+	// if Exist(dst) != true {
+	if !Exist(dst) {
 		Writefile("", dst)
 	}
 
@@ -174,18 +168,18 @@ func CopyFile(src, dst string) (w int64, err error) {
 	return io.Copy(dstFile, srcFile)
 }
 
-// CopyOFile copy file
-func CopyOFile(srcName, dstName string) (written int64, err error) {
+// OpenCopy open and copy file
+func OpenCopy(srcName, dstName string) (int64, error) {
 	src, err := os.Open(srcName)
 	if err != nil {
-		return
+		return 0, err
 	}
 	defer src.Close()
 
 	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return 0, err
 	}
 	defer dst.Close()
 	return io.Copy(dst, src)
@@ -201,8 +195,7 @@ func Readfile(userFile string) (string, error) {
 	}
 	defer fin.Close()
 
-	var restr string
-
+	var str string
 	buf := make([]byte, 1024)
 	for {
 		n, _ := fin.Read(buf)
@@ -210,13 +203,11 @@ func Readfile(userFile string) (string, error) {
 			break
 		}
 		// os.Stdout.Write(buf[:n])
-
-		strbuf := string(buf[:n])
-
-		restr += strbuf
+		strBuf := string(buf[:n])
+		str += strBuf
 	}
 
-	return restr, nil
+	return str, nil
 }
 
 // WriteFile writes data to a file named by filename.
@@ -249,10 +240,12 @@ func AppendToFile(fileName, content string) error {
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println("file create failed. err: " + err.Error())
-	} else {
-		n, _ := f.Seek(0, os.SEEK_END)
-		_, err = f.WriteAt([]byte(content), n)
+		return err
 	}
+
+	n, _ := f.Seek(0, os.SEEK_END)
+	_, err = f.WriteAt([]byte(content), n)
+
 	defer f.Close()
 	return err
 }
