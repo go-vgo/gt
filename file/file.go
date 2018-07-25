@@ -47,8 +47,8 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-// SearchFile Search a file in paths.
-func SearchFile(filename string, paths ...string) (fullpath string, err error) {
+// Search Search a file in paths.
+func Search(filename string, paths ...string) (fullpath string, err error) {
 	for _, path := range paths {
 		if fullpath = filepath.Join(path, filename); Exist(fullpath) {
 			return
@@ -156,7 +156,7 @@ func CopyFile(src, dst string) (w int64, err error) {
 
 	// if Exist(dst) != true {
 	if !Exist(dst) {
-		Writefile("", dst)
+		Write("", dst)
 	}
 
 	dstFile, err := os.Create(dst)
@@ -185,8 +185,8 @@ func OpenCopy(srcName, dstName string) (int64, error) {
 	return io.Copy(dst, src)
 }
 
-// Readfile read file and return string
-func Readfile(userFile string) (string, error) {
+// Read read file and return string
+func Read(userFile string) (string, error) {
 	// userFile := fname
 	fin, err := os.Open(userFile)
 	if err != nil {
@@ -218,10 +218,10 @@ func WriteFile(fileName string, data []byte) error {
 	return ioutil.WriteFile(fileName, data, 0655)
 }
 
-// Writefile writes data to a file named by filename.
+// Write writes data to a file named by filename.
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
-func Writefile(fileName, writeStr string) {
+func Write(fileName, writeStr string) {
 	os.MkdirAll(path.Dir(fileName), os.ModePerm)
 
 	fout, err := os.Create(fileName)
@@ -234,8 +234,8 @@ func Writefile(fileName, writeStr string) {
 	fout.WriteString(writeStr)
 }
 
-// AppendToFile append file
-func AppendToFile(fileName, content string) error {
+// AppendTo append to file
+func AppendTo(fileName, content string) error {
 	// 以只写的模式，打开文件
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
@@ -250,8 +250,8 @@ func AppendToFile(fileName, content string) error {
 	return err
 }
 
-// ListFile file list
-func ListFile(dirPth string, suffix string) (files []string, err error) {
+// List file list
+func List(dirPth string, suffix string) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dir, err := ioutil.ReadDir(dirPth)
 	if err != nil {
@@ -290,8 +290,8 @@ func ListDir(dirPth string, suffix string) (files []string, err error) {
 	return files, nil
 }
 
-// WalkFile file walk
-func WalkFile(dirPth, suffix string) (files []string, err error) {
+// Walk file walk
+func Walk(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
 	err = filepath.Walk(dirPth, func(filename string, fi os.FileInfo, err error) error {
