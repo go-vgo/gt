@@ -46,11 +46,9 @@ func Watch(paths string, config interface{}) {
 				// 	log.Println("watcher.Events: ignore CHMOD event: ", event)
 				// 	continue
 				// }
-
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					// log.Println("modified file: ", event.Name)
 					Init(paths, config)
-					// log.Println("watch config... ", config)
 					log.Println("watch config: ", config)
 				}
 			case err := <-watcher.Errors:

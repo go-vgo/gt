@@ -30,8 +30,8 @@ import (
 
 // Exist checks whether a file or directory exists.
 // It returns false when the file or directory does not exist.
-func Exist(filename string) bool {
-	_, err := os.Stat(filename)
+func Exist(fileName string) bool {
+	_, err := os.Stat(fileName)
 	return err == nil || os.IsExist(err)
 }
 
@@ -47,10 +47,20 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
+// Is returns true if path is a file,
+// or returns false when it's a directory or not exist.
+func Is(filePath string) bool {
+	f, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return !f.IsDir()
+}
+
 // Search Search a file in paths.
-func Search(filename string, paths ...string) (fullpath string, err error) {
+func Search(fileName string, paths ...string) (fullpath string, err error) {
 	for _, path := range paths {
-		if fullpath = filepath.Join(path, filename); Exist(fullpath) {
+		if fullpath = filepath.Join(path, fileName); Exist(fullpath) {
 			return
 		}
 	}
@@ -65,6 +75,15 @@ func Size(file string) (int64, error) {
 		return 0, err
 	}
 	return f.Size(), nil
+}
+
+// MTime returns file modified time and possible error.
+func MTime(file string) (int64, error) {
+	f, err := os.Stat(file)
+	if err != nil {
+		return 0, err
+	}
+	return f.ModTime().Unix(), nil
 }
 
 // Sha open file return sha
@@ -105,7 +124,7 @@ func IoSha(fileIO *os.File, args ...string) (string, error) {
 }
 
 // Copy copies file from source to target path.
-func Copy(src, dest string) error {
+func Copy(src, dst string) error {
 	// Gather file information to set back later.
 	si, err := os.Lstat(src)
 	if err != nil {
@@ -120,7 +139,7 @@ func Copy(src, dest string) error {
 		}
 		// NOTE: os.Chmod and os.Chtimes don't recoganize symbolic link,
 		// which will lead "no such file or directory" error.
-		return os.Symlink(target, dest)
+		return os.Symlink(target, dst)
 	}
 
 	sr, err := os.Open(src)
@@ -129,7 +148,7 @@ func Copy(src, dest string) error {
 	}
 	defer sr.Close()
 
-	dw, err := os.Create(dest)
+	dw, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
@@ -140,17 +159,17 @@ func Copy(src, dest string) error {
 	}
 
 	// Set back file information.
-	if err = os.Chtimes(dest, si.ModTime(), si.ModTime()); err != nil {
+	if err = os.Chtimes(dst, si.ModTime(), si.ModTime()); err != nil {
 		return err
 	}
-	return os.Chmod(dest, si.Mode())
+	return os.Chmod(dst, si.Mode())
 }
 
 // CopyFile copies file from source to target path.
-func CopyFile(src, dst string) (w int64, err error) {
+func CopyFile(src, dst string) (int64, error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
-		return
+		return 0, err
 	}
 	defer srcFile.Close()
 
@@ -161,8 +180,8 @@ func CopyFile(src, dst string) (w int64, err error) {
 
 	dstFile, err := os.Create(dst)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		// fmt.Println(err.Error())
+		return 0, err
 	}
 	defer dstFile.Close()
 	return io.Copy(dstFile, srcFile)
@@ -186,11 +205,10 @@ func OpenCopy(srcName, dstName string) (int64, error) {
 }
 
 // Read read file and return string
-func Read(userFile string) (string, error) {
-	// userFile := fname
-	fin, err := os.Open(userFile)
+func Read(fileName string) (string, error) {
+	fin, err := os.Open(fileName)
 	if err != nil {
-		log.Println("os.Open: ", userFile, err)
+		log.Println("os.Open: ", fileName, err)
 		return "", err
 	}
 	defer fin.Close()
@@ -226,7 +244,7 @@ func Write(fileName, writeStr string) {
 
 	fout, err := os.Create(fileName)
 	if err != nil {
-		log.Println("write file "+fileName, err)
+		log.Println("Write file "+fileName, err)
 		return
 	}
 	defer fout.Close()
@@ -239,7 +257,7 @@ func AppendTo(fileName, content string) error {
 	// 以只写的模式，打开文件
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println("file create failed. err: " + err.Error())
+		log.Println("File open failed. err: " + err.Error())
 		return err
 	}
 
@@ -250,8 +268,8 @@ func AppendTo(fileName, content string) error {
 	return err
 }
 
-// List file list
-func List(dirPth string, suffix string) (files []string, err error) {
+// List list file
+func List(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dir, err := ioutil.ReadDir(dirPth)
 	if err != nil {
@@ -270,8 +288,8 @@ func List(dirPth string, suffix string) (files []string, err error) {
 	return files, nil
 }
 
-// ListDir dir list
-func ListDir(dirPth string, suffix string) (files []string, err error) {
+// ListDir list dir
+func ListDir(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dir, err := ioutil.ReadDir(dirPth)
 	if err != nil {
@@ -290,37 +308,39 @@ func ListDir(dirPth string, suffix string) (files []string, err error) {
 	return files, nil
 }
 
-// Walk file walk
+// Walk walk file
 func Walk(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
-	err = filepath.Walk(dirPth, func(filename string, fi os.FileInfo, err error) error {
-		if fi.IsDir() {
-			return nil
-		}
+	err = filepath.Walk(
+		dirPth, func(filename string, fi os.FileInfo, err error) error {
+			if fi.IsDir() {
+				return nil
+			}
 
-		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-			files = append(files, filename)
-		}
-		return nil
-	})
+			if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
+				files = append(files, filename)
+			}
+			return nil
+		})
 	return files, err
 }
 
-// WalkDir dir walk
+// WalkDir walk dir
 func WalkDir(dirPth, suffix string) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
-	err = filepath.Walk(dirPth, func(filename string, fi os.FileInfo, err error) error {
+	err = filepath.Walk(
+		dirPth, func(filename string, fi os.FileInfo, err error) error {
 
-		if !fi.IsDir() {
+			if !fi.IsDir() {
+				return nil
+			}
+
+			if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
+				files = append(files, filename)
+			}
 			return nil
-		}
-
-		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-			files = append(files, filename)
-		}
-		return nil
-	})
+		})
 	return files, err
 }
