@@ -157,7 +157,7 @@ func GetRandomUserAgent(args ...[]string) string {
 }
 
 // Do http.Do
-func Do(url string, out int, method string, args ...[]string) (*http.Response, error) {
+func Do(url, method string, out int, args ...[]string) (*http.Response, error) {
 	// POST
 	// var doMethod = "GET"
 	// if len(method) > 0 {
@@ -200,11 +200,11 @@ func DoPost(url string, args ...interface{}) (*http.Response, error) {
 	}
 
 	if len(args) > 1 {
-		res, err := Do(url, out, "POST", args[0].([]string))
+		res, err := Do(url, "POST", out, args[1].([]string))
 		return res, err
 	}
 
-	res, err := Do(url, out, "POST")
+	res, err := Do(url, "POST", out)
 	return res, err
 }
 
@@ -216,10 +216,10 @@ func DoGet(url string, args ...interface{}) (*http.Response, error) {
 	}
 
 	if len(args) > 1 {
-		res, err := Do(url, out, "GET", args[1].([]string))
+		res, err := Do(url, "GET", out, args[1].([]string))
 		return res, err
 	}
 
-	res, err := Do(url, out, "GET")
+	res, err := Do(url, "GET", out)
 	return res, err
 }
