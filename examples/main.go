@@ -17,12 +17,12 @@ import (
 )
 
 func main() {
-	sha, err := file.OFileSha("../file/file.go", "sha256")
+	sha, err := file.Sha("../file/file.go", "sha256")
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(sha)
 
-	fileSize, err := file.FileSize("../file/flie.go")
+	fileSize, err := file.Size("../file/file.go")
 	fmt.Println(fileSize, err)
 }
