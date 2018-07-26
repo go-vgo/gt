@@ -217,7 +217,7 @@ func CopyFile(src, dst string) (int64, error) {
 
 	// if Exist(dst) != true {
 	if !Exist(dst) {
-		Write("", dst)
+		Write(dst, "")
 	}
 
 	dstFile, err := os.Create(dst)
