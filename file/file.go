@@ -95,6 +95,7 @@ func List(dirPth, suffix string) (files []string, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	PthSep := string(os.PathSeparator)
 	suffix = strings.ToUpper(suffix)
 	for _, fi := range dir {
@@ -105,6 +106,7 @@ func List(dirPth, suffix string) (files []string, err error) {
 			files = append(files, dirPth+PthSep+fi.Name())
 		}
 	}
+
 	return files, nil
 }
 
@@ -115,6 +117,7 @@ func ListDir(dirPth, suffix string) (files []string, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	PthSep := string(os.PathSeparator)
 	suffix = strings.ToUpper(suffix)
 	for _, fi := range dir {
@@ -125,6 +128,7 @@ func ListDir(dirPth, suffix string) (files []string, err error) {
 			files = append(files, dirPth+PthSep+fi.Name())
 		}
 	}
+
 	return files, nil
 }
 
@@ -143,6 +147,7 @@ func Walk(dirPth, suffix string) (files []string, err error) {
 			}
 			return nil
 		})
+
 	return files, err
 }
 
@@ -152,7 +157,6 @@ func WalkDir(dirPth, suffix string) (files []string, err error) {
 	suffix = strings.ToUpper(suffix)
 	err = filepath.Walk(
 		dirPth, func(filename string, fi os.FileInfo, err error) error {
-
 			if !fi.IsDir() {
 				return nil
 			}
@@ -162,6 +166,7 @@ func WalkDir(dirPth, suffix string) (files []string, err error) {
 			}
 			return nil
 		})
+
 	return files, err
 }
 
