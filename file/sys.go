@@ -41,6 +41,25 @@ func Is(filePath string) bool {
 	return !f.IsDir()
 }
 
+// IsDir returns true if path is a directory,
+// or returns false when it's a file or not exist.
+func IsDir(filePath string) bool {
+	f, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return f.IsDir()
+}
+
+// Mode returns file mode if file is a exist.
+func Mode(filePath string) os.FileMode {
+	f, err := os.Stat(filePath)
+	if err != nil {
+		return 0
+	}
+	return f.Mode()
+}
+
 // Search Search a file in paths.
 func Search(fileName string, paths ...string) (fullpath string, err error) {
 	for _, path := range paths {
