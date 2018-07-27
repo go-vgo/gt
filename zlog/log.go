@@ -30,15 +30,6 @@ type Zlog struct {
 	// log.Logger
 }
 
-var (
-	logger, errLogger *zap.Logger
-	sugar, errSugar   *zap.SugaredLogger
-
-	zapErr error
-	// ZlogTime zlog time, zapcore.Field
-	ZlogTime = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
-)
-
 type logConfig struct {
 	Mode    string
 	Path    string
@@ -47,7 +38,15 @@ type logConfig struct {
 	// Srv  Server     `toml:"server"`
 }
 
-var config logConfig
+var (
+	logger, errLogger *zap.Logger
+	sugar, errSugar   *zap.SugaredLogger
+	config            logConfig
+
+	zapErr error
+	// ZlogTime zlog time, zapcore.Field
+	ZlogTime = zap.String("time", time.Now().Format("2006-01-02 15:04:05"))
+)
 
 // Init zap log and config
 func Init(tpath string) {
