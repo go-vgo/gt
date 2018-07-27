@@ -12,6 +12,8 @@ package hset
 
 import (
 	"testing"
+
+	"github.com/vcaesar/tt"
 )
 
 func TestSetAdd(t *testing.T) {
@@ -21,12 +23,12 @@ func TestSetAdd(t *testing.T) {
 	set.Add(2)
 	set.Add(2, 3)
 	set.Add()
-	if actualValue := set.Empty(); actualValue != false {
-		t.Errorf("Got %v expected %v", actualValue, false)
-	}
-	if actualValue := set.Len(); actualValue != 3 {
-		t.Errorf("Got %v expected %v", actualValue, 3)
-	}
+
+	actualValue := set.Empty()
+	tt.False(t, actualValue)
+
+	actualVal := set.Len()
+	tt.Equal(t, 3, actualVal)
 }
 
 func TestSetContains(t *testing.T) {
@@ -34,36 +36,35 @@ func TestSetContains(t *testing.T) {
 	set.Add(3, 1, 2)
 	set.Add(2, 3)
 	set.Add()
-	if actualValue := set.Contains(); actualValue != true {
-		t.Errorf("Got %v expected %v", actualValue, true)
-	}
-	if actualValue := set.Contains(1); actualValue != true {
-		t.Errorf("Got %v expected %v", actualValue, true)
-	}
-	if actualValue := set.Contains(1, 2, 3); actualValue != true {
-		t.Errorf("Got %v expected %v", actualValue, true)
-	}
-	if actualValue := set.Contains(1, 2, 3, 4); actualValue != false {
-		t.Errorf("Got %v expected %v", actualValue, false)
-	}
+	actualValue := set.Contains()
+	tt.True(t, actualValue)
+
+	actualValue = set.Contains(1)
+	tt.True(t, actualValue)
+
+	actualValue = set.Contains(1, 2, 3)
+	tt.True(t, actualValue)
+
+	actualValue = set.Contains(1, 2, 3, 4)
+	tt.False(t, actualValue)
 }
 
 func TestSetRemove(t *testing.T) {
 	set := New()
 	set.Add(3, 1, 2)
 	set.Remove()
-	if actualValue := set.Len(); actualValue != 3 {
-		t.Errorf("Got %v expected %v", actualValue, 3)
-	}
+	actualValue := set.Len()
+	tt.Equal(t, 3, actualValue)
+
 	set.Remove(1)
-	if actualValue := set.Len(); actualValue != 2 {
-		t.Errorf("Got %v expected %v", actualValue, 2)
-	}
+	actualValue = set.Len()
+	tt.Equal(t, 2, actualValue)
+
 	set.Remove(3)
 	set.Remove(3)
 	set.Remove()
 	set.Remove(2)
-	if actualValue := set.Len(); actualValue != 0 {
-		t.Errorf("Got %v expected %v", actualValue, 0)
-	}
+
+	actualValue = set.Len()
+	tt.Equal(t, 0, actualValue)
 }
