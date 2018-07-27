@@ -84,8 +84,18 @@ func AppendTo(fileName, content string) error {
 	n, _ := f.Seek(0, os.SEEK_END)
 	_, err = f.WriteAt([]byte(content), n)
 
-	defer f.Close()
+	f.Close()
 	return err
+}
+
+// Empty empty the file
+func Empty(fileName string, args ...int64) {
+	var size int64
+	if len(args) > 0 {
+		size = args[0]
+	}
+
+	os.Truncate(fileName, size)
 }
 
 // List list file

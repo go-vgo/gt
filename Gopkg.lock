@@ -78,8 +78,8 @@
     "net",
     "process"
   ]
-  revision = "eeb1d38d69593f121e060d24d17f7b1f0936b203"
-  version = "v2.18.05"
+  revision = "4a180b209f5f494e5923cfce81ea30ba23915877"
+  version = "v2.18.06"
 
 [[projects]]
   branch = "master"
@@ -91,7 +91,7 @@
   branch = "master"
   name = "github.com/vcaesar/tt"
   packages = ["."]
-  revision = "c51cbddb0d963279f87ae81c8f1f16e1cff2ec5d"
+  revision = "044c6fcba09ef12c80a538a0a07878069bc31da9"
 
 [[projects]]
   name = "go.uber.org/atomic"
@@ -115,8 +115,8 @@
     "internal/exit",
     "zapcore"
   ]
-  revision = "eeedf312bc6c57391d84767a4cd413f02a917974"
-  version = "v1.8.0"
+  revision = "4d45f9617f7d90f7a663ff21c7a4321dbe78098b"
+  version = "v1.9.0"
 
 [[projects]]
   branch = "master"
@@ -125,7 +125,7 @@
     "unix",
     "windows"
   ]
-  revision = "9527bec2660bd847c050fda93a0f0c6dee0800bb"
+  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
   name = "gopkg.in/natefinch/lumberjack.v2"
