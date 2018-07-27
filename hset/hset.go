@@ -44,16 +44,6 @@ func (hset *Hset) Empty() bool {
 	return hset.Len() == 0
 }
 
-// Size returns number of elements within the hset.
-// func (hset *Hset) Size() int {
-// 	return len(hset.items)
-// }
-
-// Len returns number of elements within the hset.
-func (hset *Hset) Len() int {
-	return len(hset.items)
-}
-
 // String returns a string representation of container
 func (hset *Hset) String() string {
 	str := "HasHset\n"

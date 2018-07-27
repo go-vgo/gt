@@ -46,11 +46,33 @@ func (hset *Hset) Clear() {
 	hset.Unlock()
 }
 
+// Exists returns a bool indicating if the given item exists in the set.
+func (hset *Hset) Exists(item interface{}) bool {
+	hset.RLock()
+	_, ok := hset.items[item]
+	hset.RUnlock()
+
+	return ok
+}
+
+// Size returns number of elements within the hset.
+// func (hset *Hset) Size() int {
+// 	return len(hset.items)
+// }
+
+// Len returns number of elements within the hset.
+func (hset *Hset) Len() int {
+	hset.RLock()
+	size := len(hset.items)
+	hset.RUnlock()
+	return size
+}
+
 // Values returns all items in the hset.
 // List()
 func (hset *Hset) Values() []interface{} {
-	hset.Lock()
-	defer hset.Unlock()
+	hset.RLock()
+	defer hset.RUnlock()
 	// values := make([]interface{}, hset.Size())
 	values := make([]interface{}, hset.Len())
 	count := 0
@@ -63,8 +85,8 @@ func (hset *Hset) Values() []interface{} {
 
 // Same to determine whether the two hset type values are the same.
 func (hset *Hset) Same(other Set) bool {
-	hset.Lock()
-	defer hset.Unlock()
+	hset.RLock()
+	defer hset.RUnlock()
 
 	if other == nil {
 		return false
