@@ -25,14 +25,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// PwGenSha1 generate the password
-func PwGenSha1(pass string) string {
+// Sha1Gen generate the password
+func Sha1Gen(pass string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
 	return Base64Encode(Sha1(Md5(pass)+salt) + salt)
 }
 
-// PwGen generate the password
-func PwGen(pass string) string {
+// Gen generate the sha256 password
+func Gen(pass string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
 	return Base64Encode(Sha256(Md5(pass)+salt) + salt)
 }
@@ -55,8 +55,8 @@ func Bcrypt(str string) string {
 }
 
 // BcryptCheck check bcrypt hash
-func BcryptCheck(encodePW, pwd string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(encodePW), []byte(pwd))
+func BcryptCheck(hashedPwd, pwd string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(pwd))
 	if err != nil {
 		return false
 	}
@@ -84,24 +84,24 @@ func Md5(str string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(str)))
 }
 
-// PwCheckSha1 password check
-func PwCheckSha1(pwd, saved string) bool {
-	saved = Base64Decode(saved)
-	if len(saved) < 4 {
+// Sha1Check sha1 password check
+func Sha1Check(hashed, pwd string) bool {
+	hashed = Base64Decode(hashed)
+	if len(hashed) < 4 {
 		return false
 	}
 
-	salt := saved[len(saved)-4:]
-	return Sha1(Md5(pwd)+salt)+salt == saved
+	salt := hashed[len(hashed)-4:]
+	return Sha1(Md5(pwd)+salt)+salt == hashed
 }
 
-// PwCheck password check
-func PwCheck(pwd, saved string) bool {
-	saved = Base64Decode(saved)
-	if len(saved) < 4 {
+// Check sha256 password check
+func Check(hashed, pwd string) bool {
+	hashed = Base64Decode(hashed)
+	if len(hashed) < 4 {
 		return false
 	}
 
-	salt := saved[len(saved)-4:]
-	return Sha256(Md5(pwd)+salt)+salt == saved
+	salt := hashed[len(hashed)-4:]
+	return Sha256(Md5(pwd)+salt)+salt == hashed
 }
