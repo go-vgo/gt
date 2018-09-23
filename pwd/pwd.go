@@ -26,15 +26,15 @@ import (
 )
 
 // Sha1Gen generate the password
-func Sha1Gen(pass string) string {
+func Sha1Gen(pwd string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
-	return Base64Encode(Sha1(Md5(pass)+salt) + salt)
+	return Base64Encode(Sha1(Md5(pwd)+salt) + salt)
 }
 
-// Gen generate the sha256 password
-func Gen(pass string) string {
+// Gen generate the password
+func Gen(pwd string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
-	return Base64Encode(Sha256(Md5(pass)+salt) + salt)
+	return Base64Encode(Sha256(Md5(pwd)+salt) + salt)
 }
 
 // Base64Encode base64 encode
@@ -49,8 +49,8 @@ func Base64Decode(str string) string {
 }
 
 // Bcrypt bcrypt.Sum
-func Bcrypt(str string) string {
-	hash, _ := bcrypt.GenerateFromPassword([]byte(str), bcrypt.DefaultCost)
+func Bcrypt(pwd string) string {
+	hash, _ := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 	return fmt.Sprintf("%x", hash)
 }
 
