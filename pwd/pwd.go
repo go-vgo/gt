@@ -54,6 +54,16 @@ func Bcrypt(str string) string {
 	return fmt.Sprintf("%x", hash)
 }
 
+// BcryptCheck check bcrypt hash
+func BcryptCheck(encodePW, pwd string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(encodePW), []byte(pwd))
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 // Sha1 sha1.Sum
 func Sha1(str string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(str)))
