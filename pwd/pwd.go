@@ -25,13 +25,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Sha1Gen generate the password
+// Sha1Gen generate the sha1 password
 func Sha1Gen(pwd string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
 	return Base64Encode(Sha1(Md5(pwd)+salt) + salt)
 }
 
-// Gen generate the password
+// Gen generate the sha256 password
 func Gen(pwd string) string {
 	salt := strconv.FormatInt(time.Now().UnixNano()%9000+1000, 10)
 	return Base64Encode(Sha256(Md5(pwd)+salt) + salt)
