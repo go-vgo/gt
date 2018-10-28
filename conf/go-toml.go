@@ -20,12 +20,16 @@ import (
 )
 
 // Init toml config
-func Init(filePath string, config interface{}) {
+func Init(filePath string, config interface{}) error {
 	confLock.Lock()
 	fileBytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Fatal("ioutil.ReadFile error: ", err)
+		log.Println("ioutil.ReadFile error: ", err)
+		return err
 	}
+
 	toml.Unmarshal(fileBytes, config)
 	confLock.Unlock()
+
+	return nil
 }

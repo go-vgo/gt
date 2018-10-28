@@ -19,11 +19,13 @@ import (
 )
 
 // Init toml config
-func Init(fliePath string, config interface{}) {
+func Init(fliePath string, config interface{}) error {
 	confLock.Lock()
 	if _, err := toml.DecodeFile(filePath, config); err != nil {
 		log.Println("toml.DecodeFile error: ", err)
-		return
+		return err
 	}
 	confLock.Unlock()
+
+	return nil
 }
