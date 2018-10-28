@@ -13,6 +13,7 @@ package conf
 import (
 	"log"
 	"sync"
+
 	// "time"
 
 	"github.com/fsnotify/fsnotify"
@@ -42,14 +43,18 @@ func Watch(paths string, config interface{}) {
 			select {
 			case event := <-watcher.Events:
 				log.Println("watcher events: ", event)
+
 				// if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 				// 	log.Println("watcher.Events: ignore CHMOD event: ", event)
 				// 	continue
 				// }
+
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					// log.Println("modified file: ", event.Name)
-					Init(paths, config)
-					log.Println("watch config: ", config)
+					err := Init(paths, config)
+					if err == nil {
+						log.Println("watch config: ", config)
+					}
 				}
 			case err := <-watcher.Errors:
 				log.Println("watcher.Errors error: ", err)
