@@ -204,7 +204,7 @@ func CPUPercent() ([]float64, error) {
 }
 
 // Uptime returns the system uptime in seconds.
-func Uptime() (uptime uint64, err error) {
+func Uptime() (uint64, error) {
 	hostInfo, err := host.Info()
 	if err != nil {
 		return 0, err

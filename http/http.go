@@ -28,17 +28,17 @@ import (
 type Map map[string]interface{}
 
 // Get http get
-func Get(apiUrl string, params url.Values) (rs []byte, err error) {
-	var Url *url.URL
-	Url, err = url.Parse(apiUrl)
+func Get(apiUrl string, params url.Values) ([]byte, error) {
+	// var Url *url.URL
+	u, err := url.Parse(apiUrl)
 	if err != nil {
 		log.Printf("analytic url error: \r\n %v", err)
 		return nil, err
 	}
 
 	// URLEncode
-	Url.RawQuery = params.Encode()
-	resp, err := http.Get(Url.String())
+	u.RawQuery = params.Encode()
+	resp, err := http.Get(u.String())
 	if err != nil {
 		log.Println("http get error: ", err)
 		return nil, err
@@ -49,7 +49,7 @@ func Get(apiUrl string, params url.Values) (rs []byte, err error) {
 }
 
 // Post http post, params is url.Values type
-func Post(apiUrl string, params url.Values, args ...int) (rs []byte, err error) {
+func Post(apiUrl string, params url.Values, args ...int) ([]byte, error) {
 	out := 1000
 	if len(args) > 0 {
 		out = args[0]
