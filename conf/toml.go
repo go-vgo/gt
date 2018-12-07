@@ -18,8 +18,8 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-// Init toml config
-func Init(fliePath string, config interface{}) error {
+// Init toml file config
+func Init(filePath string, config interface{}) error {
 	confLock.Lock()
 	if _, err := toml.DecodeFile(filePath, config); err != nil {
 		log.Println("toml.DecodeFile error: ", err)

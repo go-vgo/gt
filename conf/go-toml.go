@@ -19,7 +19,7 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
-// Init toml config
+// Init toml file config
 func Init(filePath string, config interface{}) error {
 	confLock.Lock()
 	fileBytes, err := ioutil.ReadFile(filePath)
