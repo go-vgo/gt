@@ -17,14 +17,20 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"runtime"
 )
 
-// ExecSh exec command shell
-func ExecSh(str string, args ...string) (string, error) {
+func getName(args ...string) (string, string) {
 	var (
 		cmdName = "/bin/bash"
-		params  = "-c"
+		// cmdName = os.Getenv("SHELL")
+		params = "-c"
 	)
+
+	if runtime.GOOS == "windows" {
+		cmdName = "cmd"
+		params = "/C"
+	}
 
 	if len(args) > 0 {
 		cmdName = args[0]
@@ -34,6 +40,14 @@ func ExecSh(str string, args ...string) (string, error) {
 		params = args[1]
 	}
 
+	return cmdName, params
+}
+
+// Run run cmd shell
+func Run(str string, args ...string) (string, error) {
+	cmdName, params := getName(args...)
+
+	fmt.Println("cmd run: ", cmdName, params, ": ", str)
 	cmd := exec.Command(cmdName, params, str)
 
 	var out bytes.Buffer
@@ -43,8 +57,8 @@ func ExecSh(str string, args ...string) (string, error) {
 	return out.String(), err
 }
 
-// ExecCmd exex command stdout
-func ExecCmd(cmdName string, params []string) bool {
+// Exec exex command stdout
+func Exec(cmdName string, params []string) bool {
 	cmd := exec.Command(cmdName, params...)
 
 	stdout, err := cmd.StdoutPipe()
