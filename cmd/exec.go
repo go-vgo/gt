@@ -20,7 +20,8 @@ import (
 	"runtime"
 )
 
-func getName(args ...string) (string, string) {
+// GetName get params name
+func GetName(args ...string) (string, string) {
 	var (
 		cmdName = "/bin/bash"
 		// cmdName = os.Getenv("SHELL")
@@ -44,21 +45,23 @@ func getName(args ...string) (string, string) {
 }
 
 // Run run cmd shell
-func Run(str string, args ...string) (string, error) {
-	cmdName, params := getName(args...)
+func Run(str string, args ...string) (string, string, error) {
+	cmdName, params := GetName(args...)
 
 	fmt.Println("cmd run: ", cmdName, params, ": ", str)
 	cmd := exec.Command(cmdName, params, str)
 
-	var out bytes.Buffer
+	var out, e bytes.Buffer
 	cmd.Stdout = &out
+	cmd.Stderr = &e
 
 	err := cmd.Run()
-	return out.String(), err
+
+	return out.String(), e.String(), err
 }
 
 // Exec exex command stdout
-func Exec(cmdName string, params []string) bool {
+func Exec(cmdName string, params ...string) bool {
 	cmd := exec.Command(cmdName, params...)
 
 	stdout, err := cmd.StdoutPipe()
