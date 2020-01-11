@@ -8,6 +8,11 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+/*
+Package hset implements a hset backed by a hash table.
+
+Structure is thread safe.
+*/
 package hset
 
 import (
