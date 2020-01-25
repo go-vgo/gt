@@ -27,10 +27,29 @@ import (
 // Map a [string]interface{} map
 type Map map[string]interface{}
 
+var (
+	userAgent = [...]string{
+		"Mozilla/4.0 (compatible, MSIE 8.0, Windows NT 6.0, Trident/4.0)",
+		"Mozilla/5.0 (compatible, MSIE 9.0, Windows NT 6.1, Trident/5.0,",
+		"Mozilla/5.0 (Macintosh, Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
+		"Mozilla/5.0 (Macintosh, U, Intel Mac OS X 10_6_8, en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+	}
+
+	r = rand.New(rand.NewSource(time.Now().UnixNano()))
+)
+
+// GetRandomUserAgent get random UserAgent
+func GetRandomUserAgent(args ...[]string) string {
+	if len(args) > 0 {
+		return userAgent[r.Intn(len(args[0]))]
+	}
+	return userAgent[r.Intn(len(userAgent))]
+}
+
 // Get http get
-func Get(apiUrl string, params url.Values) ([]byte, error) {
+func Get(api string, params url.Values) ([]byte, error) {
 	// var Url *url.URL
-	u, err := url.Parse(apiUrl)
+	u, err := url.Parse(api)
 	if err != nil {
 		log.Printf("analytic url error: \r\n %v", err)
 		return nil, err
@@ -49,19 +68,18 @@ func Get(apiUrl string, params url.Values) ([]byte, error) {
 }
 
 // Post http post, params is url.Values type
-func Post(apiUrl string, params url.Values, args ...int) ([]byte, error) {
+func Post(api string, params url.Values, args ...int) ([]byte, error) {
 	out := 1000
 	if len(args) > 0 {
 		out = args[0]
 	}
 
 	timeOut := time.Duration(out) * time.Millisecond
-
 	c := &http.Client{
 		Timeout: timeOut,
 	}
 
-	resp, err := c.PostForm(apiUrl, params)
+	resp, err := c.PostForm(api, params)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +89,8 @@ func Post(apiUrl string, params url.Values, args ...int) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-// API http api
-func API(httpUrl string, paramMap Map, method ...string) (rs []byte, err error) {
+// Api http api
+func Api(api string, paramMap Map, method ...string) (rs []byte, err error) {
 	param := url.Values{}
 	for k, v := range paramMap {
 		param.Set(k, v.(string))
@@ -84,11 +102,11 @@ func API(httpUrl string, paramMap Map, method ...string) (rs []byte, err error) 
 	}
 
 	if apiMethod == "get" {
-		rs, err = Get(httpUrl, param)
+		rs, err = Get(api, param)
 		return
 	}
 
-	rs, err = Post(httpUrl, param)
+	rs, err = Post(api, param)
 	return
 }
 
@@ -133,27 +151,7 @@ func PostFile(filename, targetUrl, upParam string) (string, error) {
 
 	log.Println("resp.Status is: ", resp.Status)
 	// fmt.Println(string(respBody))
-
 	return string(respBody), nil
-}
-
-var (
-	userAgent = [...]string{
-		"Mozilla/4.0 (compatible, MSIE 8.0, Windows NT 6.0, Trident/4.0)",
-		"Mozilla/5.0 (compatible, MSIE 9.0, Windows NT 6.1, Trident/5.0,",
-		"Mozilla/5.0 (Macintosh, Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
-		"Mozilla/5.0 (Macintosh, U, Intel Mac OS X 10_6_8, en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
-	}
-
-	r = rand.New(rand.NewSource(time.Now().UnixNano()))
-)
-
-// GetRandomUserAgent get random UserAgent
-func GetRandomUserAgent(args ...[]string) string {
-	if len(args) > 0 {
-		return userAgent[r.Intn(len(args[0]))]
-	}
-	return userAgent[r.Intn(len(userAgent))]
 }
 
 // Do http.Do
@@ -166,15 +164,10 @@ func Do(url, method string, out int, args ...[]string) (*http.Response, error) {
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		log.Println("http.NewRequest error...: ", err)
+		log.Println("http.NewRequest error: ", err)
 	}
 	// fmt.Println("req", req)
-
-	if len(args) > 0 {
-		req.Header.Set("User-Agent", GetRandomUserAgent(args[0]))
-	} else {
-		req.Header.Set("User-Agent", GetRandomUserAgent())
-	}
+	req.Header.Set("User-Agent", GetRandomUserAgent(args...))
 
 	// client := http.DefaultClient
 	timeOut := time.Duration(out) * time.Millisecond
