@@ -13,7 +13,7 @@ require (
 	github.com/shirou/gopsutil v2.18.10+incompatible
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/vcaesar/tt v0.0.0-20181105181427-53fc2b08e954
+	github.com/vcaesar/tt v0.0.0-20200124150044-d4f30cc912c1
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.10.0
