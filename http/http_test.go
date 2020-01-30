@@ -13,5 +13,5 @@ func TestApi(t *testing.T) {
 	fmt.Println("get: ", string(r))
 
 	tt.Nil(t, e)
-	tt.NotNil(t, nil)
+	tt.NotNil(t, r)
 }
