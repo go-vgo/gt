@@ -25,3 +25,13 @@ func TestAppendTo(t *testing.T) {
 	tt.Equal(t, "test", r)
 	tt.Nil(t, err)
 }
+
+func TestSys(t *testing.T) {
+	h, e := Sha(testFile)
+	tt.Equal(t, "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", h)
+	tt.Nil(t, e)
+
+	s, e := Size(testFile)
+	tt.Nil(t, e)
+	tt.Equal(t, 4, s)
+}
