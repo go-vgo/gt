@@ -12,6 +12,7 @@ package gt
 
 import (
 	"log"
+	"time"
 )
 
 const (
@@ -31,6 +32,16 @@ func Try(fun func(), handler func(interface{})) {
 		}
 	}()
 	fun()
+}
+
+// MilliSleep sleep tm milli second
+func MilliSleep(tm int) {
+	time.Sleep(time.Duration(tm) * time.Millisecond)
+}
+
+// Sleep time.Sleep tm second
+func Sleep(tm int) {
+	time.Sleep(time.Duration(tm) * time.Second)
 }
 
 // CheckErr check error
