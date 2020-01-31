@@ -13,12 +13,10 @@ package http
 import (
 	"bytes"
 	"io"
-	"log"
 	"os"
 	"time"
 
 	"io/ioutil"
-	"math/rand"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -27,31 +25,15 @@ import (
 // Map a [string]interface{} map
 type Map map[string]interface{}
 
-var (
-	userAgent = [...]string{
-		"Mozilla/4.0 (compatible, MSIE 8.0, Windows NT 6.0, Trident/4.0)",
-		"Mozilla/5.0 (compatible, MSIE 9.0, Windows NT 6.1, Trident/5.0,",
-		"Mozilla/5.0 (Macintosh, Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
-		"Mozilla/5.0 (Macintosh, U, Intel Mac OS X 10_6_8, en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
-	}
-
-	r = rand.New(rand.NewSource(time.Now().UnixNano()))
-)
-
-// GetRandomUserAgent get random UserAgent
-func GetRandomUserAgent(args ...[]string) string {
-	if len(args) > 0 {
-		return userAgent[r.Intn(len(args[0]))]
-	}
-	return userAgent[r.Intn(len(userAgent))]
-}
-
 // Get http get
-func Get(api string, params url.Values) ([]byte, error) {
-	// var Url *url.URL
+func Get(api string, args ...url.Values) ([]byte, error) {
+	var params url.Values
+	if len(args) > 0 {
+		params = args[0]
+	}
+
 	u, err := url.Parse(api)
 	if err != nil {
-		log.Printf("analytic url error: \r\n %v", err)
 		return nil, err
 	}
 
@@ -59,7 +41,6 @@ func Get(api string, params url.Values) ([]byte, error) {
 	u.RawQuery = params.Encode()
 	resp, err := http.Get(u.String())
 	if err != nil {
-		log.Println("http get error: ", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -68,10 +49,15 @@ func Get(api string, params url.Values) ([]byte, error) {
 }
 
 // Post http post, params is url.Values type
-func Post(api string, params url.Values, args ...int) ([]byte, error) {
-	out := 1000
+func Post(api string, args ...interface{}) ([]byte, error) {
+	var params url.Values
 	if len(args) > 0 {
-		out = args[0]
+		params = args[0].(url.Values)
+	}
+
+	out := 1000
+	if len(args) > 1 {
+		out = args[1].(int)
 	}
 
 	timeOut := time.Duration(out) * time.Millisecond
@@ -83,22 +69,26 @@ func Post(api string, params url.Values, args ...int) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println("http:", resp)
 	defer resp.Body.Close()
 
 	return ioutil.ReadAll(resp.Body)
 }
 
 // Api http api
-func Api(api string, paramMap Map, method ...string) (rs []byte, err error) {
+func Api(api string, args ...interface{}) (rs []byte, err error) {
+	paramMap := Map{}
+	if len(args) > 0 {
+		paramMap = args[0].(Map)
+	}
+
 	param := url.Values{}
 	for k, v := range paramMap {
 		param.Set(k, v.(string))
 	}
 
 	apiMethod := "post"
-	if len(method) > 0 {
-		apiMethod = method[0]
+	if len(args) > 1 {
+		apiMethod = args[1].(string)
 	}
 
 	if apiMethod == "get" {
@@ -110,63 +100,13 @@ func Api(api string, paramMap Map, method ...string) (rs []byte, err error) {
 	return
 }
 
-// PostFile post file
-func PostFile(filename, targetUrl, upParam string) (string, error) {
-	bodyBuf := &bytes.Buffer{}
-	bodyWriter := multipart.NewWriter(bodyBuf)
-
-	// uploadfile
-	fileWriter, err := bodyWriter.CreateFormFile(upParam, filename)
-	if err != nil {
-		log.Println("error writing to buffer.")
-		return "", err
-	}
-
-	// openfile
-	fh, err := os.Open(filename)
-	if err != nil {
-		log.Println("error opening file.")
-		return "", err
-	}
-
-	// iocopy
-	_, err = io.Copy(fileWriter, fh)
-	if err != nil {
-		return "", err
-	}
-
-	contentType := bodyWriter.FormDataContentType()
-	bodyWriter.Close()
-
-	resp, err := http.Post(targetUrl, contentType, bodyBuf)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	log.Println("resp.Status is: ", resp.Status)
-	// fmt.Println(string(respBody))
-	return string(respBody), nil
-}
-
 // Do http.Do
 func Do(url, method string, out int, args ...[]string) (*http.Response, error) {
-	// POST
-	// var doMethod = "GET"
-	// if len(method) > 0 {
-	// 	doMethod = method[0]
-	// }
-
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		log.Println("http.NewRequest error: ", err)
+		return nil, err
 	}
-	// fmt.Println("req", req)
+
 	req.Header.Set("User-Agent", GetRandomUserAgent(args...))
 
 	// client := http.DefaultClient
@@ -177,11 +117,9 @@ func Do(url, method string, out int, args ...[]string) (*http.Response, error) {
 
 	res, e := client.Do(req)
 	if e != nil {
-		log.Printf("Get request %s returned error: %s", url, e)
-		return res, err
+		return res, e
 	}
 
-	// log.Println("res... ", res)
 	return res, nil
 }
 
@@ -215,4 +153,44 @@ func DoGet(url string, args ...interface{}) (*http.Response, error) {
 
 	res, err := Do(url, "GET", out)
 	return res, err
+}
+
+// PostFile post file
+func PostFile(filename, targetUrl, upParam string) (string, error) {
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+
+	// uploadfile
+	fileWriter, err := bodyWriter.CreateFormFile(upParam, filename)
+	if err != nil {
+		return "", err
+	}
+
+	// openfile
+	fh, err := os.Open(filename)
+	if err != nil {
+		return "", err
+	}
+
+	// iocopy
+	_, err = io.Copy(fileWriter, fh)
+	if err != nil {
+		return "", err
+	}
+
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
+
+	resp, err := http.Post(targetUrl, contentType, bodyBuf)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(respBody), nil
 }
