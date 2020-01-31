@@ -3,7 +3,6 @@ package file
 import (
 	"errors"
 	"fmt"
-	"hash"
 	"io"
 	"os"
 
@@ -97,23 +96,15 @@ func Sha(filePath string, args ...string) (sha string, err error) {
 	}
 	defer file.Close()
 
-	if len(args) > 0 {
-		sha, err = IoSha(file, args[0])
-		return
-	}
-
-	sha, err = IoSha(file)
+	sha, err = IoSha(file, args...)
 	return
 }
 
 // IoSha file sha
 func IoSha(fileIO *os.File, args ...string) (string, error) {
-	var h hash.Hash
-
+	h := sha1.New()
 	if len(args) > 0 {
 		h = sha256.New()
-	} else {
-		h = sha1.New()
 	}
 
 	_, err := io.Copy(h, fileIO)
@@ -122,6 +113,5 @@ func IoSha(fileIO *os.File, args ...string) (string, error) {
 	}
 
 	sha := fmt.Sprintf("%x", h.Sum(nil))
-
 	return sha, nil
 }
