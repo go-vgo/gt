@@ -7,17 +7,18 @@ go:
   # - 1.10.x
   # - 1.11.x
   # - 1.12.x
-  - 1.13.x
+  # - 1.13.x
+  - 1.14.x
   # - tip
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   # - go get -u github.com/BurntSushi/toml
   # - go get -u github.com/fsnotify/fsnotify
-  # - go get -u google.golang.org/grpc 
-  # - go get -u github.com/coreos/etcd  
+  # - go get -u google.golang.org/grpc
+  # - go get -u github.com/coreos/etcd
   # - go get -u github.com/coreos/etcd/clientv3
-  # - go get -u github.com/go-kit/kit/log 
+  # - go get -u github.com/go-kit/kit/log
   # - go get -u go.uber.org/zap
   # - go get -u gopkg.in/natefinch/lumberjack.v2
   # - go get -v -t
