@@ -20,7 +20,9 @@ func TestAppendTo(t *testing.T) {
 	tt.Equal(t, "", r)
 	tt.Nil(t, err)
 
-	Write(testFile, "test")
+	err = Write(testFile, "test")
+	tt.Nil(t, err)
+
 	r, err = Read(testFile)
 	tt.Equal(t, "test", r)
 	tt.Nil(t, err)

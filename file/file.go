@@ -59,17 +59,18 @@ func WriteFile(fileName string, data []byte) error {
 // Write writes data to a file named by filename.
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
-func Write(fileName, writeStr string) {
+func Write(fileName, writeStr string) error {
 	os.MkdirAll(path.Dir(fileName), os.ModePerm)
 
 	fout, err := os.Create(fileName)
 	if err != nil {
 		log.Println("Write file "+fileName, err)
-		return
+		return err
 	}
 	defer fout.Close()
 
-	fout.WriteString(writeStr)
+	_, err = fout.WriteString(writeStr)
+	return err
 }
 
 // AppendTo append to file
