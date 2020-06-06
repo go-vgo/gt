@@ -28,7 +28,7 @@ import (
 func Read(fileName string) (string, error) {
 	fin, err := os.Open(fileName)
 	if err != nil {
-		log.Println("os.Open: ", fileName, err)
+		// log.Println("os.Open: ", fileName, err)
 		return "", err
 	}
 	defer fin.Close()
@@ -64,7 +64,7 @@ func Write(fileName, writeStr string) error {
 
 	fout, err := os.Create(fileName)
 	if err != nil {
-		log.Println("Write file "+fileName, err)
+		// log.Println("Write file "+fileName, err)
 		return err
 	}
 	defer fout.Close()
@@ -75,7 +75,7 @@ func Write(fileName, writeStr string) error {
 
 // AppendTo append to file
 func AppendTo(fileName, content string) error {
-	// 以只写的模式，打开文件
+	// write only
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println("File open failed. err: " + err.Error())
@@ -220,6 +220,7 @@ func Copy(src, dst string) error {
 	if err = os.Chtimes(dst, si.ModTime(), si.ModTime()); err != nil {
 		return err
 	}
+
 	return os.Chmod(dst, si.Mode())
 }
 
@@ -242,6 +243,7 @@ func CopyFile(src, dst string) (int64, error) {
 		return 0, err
 	}
 	defer dstFile.Close()
+
 	return io.Copy(dstFile, srcFile)
 }
 
@@ -259,5 +261,6 @@ func OpenCopy(srcName, dstName string) (int64, error) {
 		return 0, err
 	}
 	defer dst.Close()
+
 	return io.Copy(dst, src)
 }
