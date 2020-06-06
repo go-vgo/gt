@@ -16,12 +16,13 @@ import (
 )
 
 const (
-	version string = "v0.10.0.78, Mount Kailash!"
+	// Version get version
+	Version string = "v0.20.0.153, Mount Kailash!"
 )
 
 // GetVersion get version
 func GetVersion() string {
-	return version
+	return Version
 }
 
 // Try handler error
