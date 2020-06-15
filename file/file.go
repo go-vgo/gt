@@ -13,6 +13,7 @@ package file
 // package gt
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -71,6 +72,37 @@ func Write(fileName, writeStr string) error {
 
 	_, err = fout.WriteString(writeStr)
 	return err
+}
+
+// ReadIo read file return io.Reader
+func ReadIo(fileName string) (io.Reader, error) {
+	f, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := bufio.NewReader(f)
+	return reader, err
+}
+
+// WriteIo wite file with io.Reader
+func WriteIo(fileName string, fio io.Reader) error {
+	data, err := ioutil.ReadAll(fio)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(fileName, data, 0655)
+}
+
+// ReadFromIO read io.Reader return string and error
+func ReadFromIO(fio io.Reader) (string, error) {
+	b, err := ioutil.ReadAll(fio)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
 }
 
 // AppendTo append to file
