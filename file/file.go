@@ -16,7 +16,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -110,7 +109,7 @@ func AppendTo(fileName, content string) error {
 	// write only
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println("File open failed. err: " + err.Error())
+		// log.Println("File open failed. err: " + err.Error())
 		return err
 	}
 
