@@ -1,0 +1,4 @@
+github.com/go-vgo/gt/file v0.0.0-20200620041940-db5e6d745aaf h1:3WBikfQNnytB60F28MyPfCqxs2RIZ/BRvPi9U7C4tKg=
+github.com/go-vgo/gt/file v0.0.0-20200620041940-db5e6d745aaf/go.mod h1:WQr4jbi/mrWQQrjwSmxWHf5WNaPKY8hlzuBuJAOj4OY=
+github.com/vcaesar/tt v0.10.0 h1:jPtFiRRnCOXVakd5ujCed2dwWwTs91wh8W1iHeUIfc0=
+github.com/vcaesar/tt v0.10.0/go.mod h1:GHPxQYhn+7OgKakRusH7KJ0M5MhywoeLb8Fcffs/Gtg=
