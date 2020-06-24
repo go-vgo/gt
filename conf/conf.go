@@ -24,6 +24,12 @@ var (
 	confLock = new(sync.RWMutex)
 )
 
+// GoWatch go watch the paths
+func GoWatch(paths string, cf interface{}) {
+	Init(paths, cf)
+	go Watch(paths, cf)
+}
+
 // NewWatcher new fsnotify watcher
 func NewWatcher(paths string, config interface{}) {
 	Watch(paths, config)
