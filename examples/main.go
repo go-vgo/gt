@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/go-vgo/gt/file"
+	"github.com/go-vgo/gt/hset"
 )
 
 func main() {
@@ -25,4 +26,11 @@ func main() {
 
 	fileSize, err := file.Size("../file/file.go")
 	fmt.Println(fileSize, err)
+
+	f, err := file.ReadIo("../file/file.go")
+	fmt.Println(f, err)
+
+	s := hset.New()
+	s.Add(1)
+	fmt.Println(s)
 }
