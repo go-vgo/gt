@@ -59,7 +59,7 @@ func Watch(paths string, config interface{}) {
 					// log.Println("modified file: ", event.Name)
 					err := Init(paths, config)
 					if err == nil {
-						log.Println("Conf fsnotify watch config: ", config)
+						log.Println("Conf fsnotify.Write config: ", config)
 					}
 				}
 			case err := <-watcher.Errors:
