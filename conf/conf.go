@@ -39,7 +39,7 @@ func NewWatcher(paths string, config interface{}) {
 func Watch(paths string, config interface{}) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal("fsnotify.NewWatcher() error: ", err)
+		log.Fatal("Conf fsnotify.NewWatcher() error: ", err)
 	}
 	defer watcher.Close()
 
@@ -48,7 +48,7 @@ func Watch(paths string, config interface{}) {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Println("fsnotify watcher events: ", event)
+				log.Println("Conf fsnotify watcher events: ", event)
 
 				// if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 				// 	log.Println("fsnotify watcher.Events: ignore CHMOD event: ", event)
@@ -59,18 +59,18 @@ func Watch(paths string, config interface{}) {
 					// log.Println("modified file: ", event.Name)
 					err := Init(paths, config)
 					if err == nil {
-						log.Println("fsnotify watch config: ", config)
+						log.Println("Conf fsnotify watch config: ", config)
 					}
 				}
 			case err := <-watcher.Errors:
-				log.Println("fsnotify watcher.Errors error: ", err)
+				log.Println("Conf fsnotify watcher.Errors error: ", err)
 			}
 		}
 	}()
 
 	err = watcher.Add(paths)
 	if err != nil {
-		log.Fatal("fsnotify watcher.Add: ", err)
+		log.Fatal("Conf fsnotify watcher.Add: ", err)
 	}
 	<-done
 }

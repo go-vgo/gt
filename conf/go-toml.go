@@ -24,7 +24,7 @@ func Init(filePath string, config interface{}) error {
 	confLock.Lock()
 	fileBytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Println("ioutil.ReadFile error: ", err)
+		log.Println("Toml init ioutil.ReadFile error: ", err)
 		return err
 	}
 
