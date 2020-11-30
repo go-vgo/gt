@@ -26,17 +26,17 @@ import (
 
 // Read read file and return string
 func Read(fileName string) (string, error) {
-	fin, err := os.Open(fileName)
+	f, err := os.Open(fileName)
 	if err != nil {
 		// log.Println("os.Open: ", fileName, err)
 		return "", err
 	}
-	defer fin.Close()
+	defer f.Close()
 
 	var str string
 	buf := make([]byte, 1024)
 	for {
-		n, _ := fin.Read(buf)
+		n, _ := f.Read(buf)
 		if 0 == n {
 			break
 		}
@@ -52,7 +52,11 @@ func Read(fileName string) (string, error) {
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
 func WriteFile(fileName string, data []byte) error {
-	os.MkdirAll(path.Dir(fileName), os.ModePerm)
+	err := os.MkdirAll(path.Dir(fileName), os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	return ioutil.WriteFile(fileName, data, 0655)
 }
 
@@ -60,7 +64,10 @@ func WriteFile(fileName string, data []byte) error {
 // If the file does not exist, WriteFile creates it
 // and its upper level paths.
 func Write(fileName, writeStr string) error {
-	os.MkdirAll(path.Dir(fileName), os.ModePerm)
+	err := os.MkdirAll(path.Dir(fileName), os.ModePerm)
+	if err != nil {
+		return err
+	}
 
 	fout, err := os.Create(fileName)
 	if err != nil {
@@ -121,31 +128,38 @@ func AppendTo(fileName, content string) error {
 }
 
 // Empty empty the file
-func Empty(fileName string, args ...int64) {
+func Empty(fileName string, args ...int64) error {
 	var size int64
 	if len(args) > 0 {
 		size = args[0]
 	}
 
-	os.Truncate(fileName, size)
+	return os.Truncate(fileName, size)
 }
 
 // List list file
-func List(dirPth, suffix string) (files []string, err error) {
+func List(dir, suffix string, isDir ...bool) (files []string, err error) {
 	files = make([]string, 0, 10)
-	dir, err := ioutil.ReadDir(dirPth)
+	dirIo, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
 
-	PthSep := string(os.PathSeparator)
+	pthSep := string(os.PathSeparator)
 	suffix = strings.ToUpper(suffix)
-	for _, fi := range dir {
-		if fi.IsDir() {
-			continue
+	for _, fi := range dirIo {
+		if len(isDir) > 0 {
+			if !fi.IsDir() {
+				continue
+			}
+		} else {
+			if fi.IsDir() {
+				continue
+			}
 		}
+
 		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-			files = append(files, dirPth+PthSep+fi.Name())
+			files = append(files, dir+pthSep+fi.Name())
 		}
 	}
 
@@ -153,63 +167,38 @@ func List(dirPth, suffix string) (files []string, err error) {
 }
 
 // ListDir list dir
-func ListDir(dirPth, suffix string) (files []string, err error) {
-	files = make([]string, 0, 10)
-	dir, err := ioutil.ReadDir(dirPth)
-	if err != nil {
-		return nil, err
-	}
-
-	PthSep := string(os.PathSeparator)
-	suffix = strings.ToUpper(suffix)
-	for _, fi := range dir {
-		if !fi.IsDir() {
-			continue
-		}
-		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-			files = append(files, dirPth+PthSep+fi.Name())
-		}
-	}
-
-	return files, nil
+func ListDir(dir, suffix string) (files []string, err error) {
+	return List(dir, suffix, false)
 }
 
 // Walk walk file
-func Walk(dirPth, suffix string) (files []string, err error) {
+func Walk(dir, suffix string, isDir ...bool) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
-	err = filepath.Walk(
-		dirPth, func(filename string, fi os.FileInfo, err error) error {
+	fn := func(filename string, fi os.FileInfo, err error) error {
+		if len(isDir) > 0 {
+			if !fi.IsDir() {
+				return nil
+			}
+		} else {
 			if fi.IsDir() {
 				return nil
 			}
+		}
 
-			if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-				files = append(files, filename)
-			}
-			return nil
-		})
+		if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
+			files = append(files, filename)
+		}
+		return nil
+	}
 
+	err = filepath.Walk(dir, fn)
 	return files, err
 }
 
 // WalkDir walk dir
-func WalkDir(dirPth, suffix string) (files []string, err error) {
-	files = make([]string, 0, 30)
-	suffix = strings.ToUpper(suffix)
-	err = filepath.Walk(
-		dirPth, func(filename string, fi os.FileInfo, err error) error {
-			if !fi.IsDir() {
-				return nil
-			}
-
-			if strings.HasSuffix(strings.ToUpper(fi.Name()), suffix) {
-				files = append(files, filename)
-			}
-			return nil
-		})
-
-	return files, err
+func WalkDir(dir, suffix string) (files []string, err error) {
+	return Walk(dir, suffix, false)
 }
 
 // Copy copies file from source to target path.
@@ -226,8 +215,6 @@ func Copy(src, dst string) error {
 		if err != nil {
 			return err
 		}
-		// NOTE: os.Chmod and os.Chtimes don't recoganize symbolic link,
-		// which will lead "no such file or directory" error.
 		return os.Symlink(target, dst)
 	}
 
@@ -248,7 +235,8 @@ func Copy(src, dst string) error {
 	}
 
 	// Set back file information.
-	if err = os.Chtimes(dst, si.ModTime(), si.ModTime()); err != nil {
+	err = os.Chtimes(dst, si.ModTime(), si.ModTime())
+	if err != nil {
 		return err
 	}
 
@@ -265,7 +253,10 @@ func CopyFile(src, dst string) (int64, error) {
 
 	// if Exist(dst) != true {
 	if !Exist(dst) {
-		Write(dst, "")
+		err := Write(dst, "")
+		if err != nil {
+			return 0, err
+		}
 	}
 
 	dstFile, err := os.Create(dst)
