@@ -14,7 +14,8 @@ func TestAppendTo(t *testing.T) {
 	}
 
 	// os.Truncate(testFile, 0)
-	Empty(testFile)
+	err := Empty(testFile)
+	tt.Nil(t, err)
 
 	r, err := Read(testFile)
 	tt.Equal(t, "", r)
@@ -26,6 +27,24 @@ func TestAppendTo(t *testing.T) {
 	r, err = Read(testFile)
 	tt.Equal(t, "test", r)
 	tt.Nil(t, err)
+}
+
+func TestList(t *testing.T) {
+	f, err := List("./", ".go")
+	tt.Nil(t, err)
+	tt.Equal(t, 3, len(f))
+
+	f, err = ListDir("./", ".go")
+	tt.Nil(t, err)
+	tt.Equal(t, 0, len(f))
+
+	f, err = Walk("./", ".go")
+	tt.Nil(t, err)
+	tt.Equal(t, 3, len(f))
+
+	f, err = WalkDir("./", ".go")
+	tt.Nil(t, err)
+	tt.Equal(t, 0, len(f))
 }
 
 func TestSys(t *testing.T) {
