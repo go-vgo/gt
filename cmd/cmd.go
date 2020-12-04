@@ -56,7 +56,6 @@ func Run(str string, args ...string) (string, string, error) {
 	cmd.Stderr = &e
 
 	err := cmd.Run()
-
 	return out.String(), e.String(), err
 }
 
@@ -65,12 +64,14 @@ func Exec(cmdName string, params ...string) bool {
 	cmd := exec.Command(cmdName, params...)
 
 	stdout, err := cmd.StdoutPipe()
-
 	if err != nil {
 		log.Println("cmd.StdoutPipe error: ", err)
 		return false
 	}
-	cmd.Start()
+	err = cmd.Start()
+	if err != nil {
+		log.Println("cmd.Start error: ", err)
+	}
 
 	reader := bufio.NewReader(stdout)
 	for {
@@ -81,6 +82,9 @@ func Exec(cmdName string, params ...string) bool {
 		fmt.Println(line)
 	}
 
-	cmd.Wait()
+	err = cmd.Wait()
+	if err != nil {
+		log.Println("cmd.Wait error: ", err)
+	}
 	return true
 }
