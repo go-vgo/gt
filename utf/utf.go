@@ -29,37 +29,64 @@ func CharCodeAt(str string, n int) rune {
 	return 0
 }
 
-// ToUC trans string to Unicode
-func ToUC(str string) (uc []string) {
+// ToUnicode trans string to unicode
+func ToUnicode(str string) (uc []string) {
 	for _, r := range str {
 		textQ := strconv.QuoteToASCII(string(r))
 		textUnQ := textQ[1 : len(textQ)-1]
 
-		st := strings.Replace(textUnQ, "\\u", "U", -1)
+		uc = append(uc, textUnQ)
+	}
+
+	return
+}
+
+// Unicode tarans string to unicode string
+func Unicode(str string) (u string) {
+	for _, v := range ToUnicode(str) {
+		u += v
+	}
+	return
+}
+
+// ToUC trans string to Unicode
+func ToUC(str string) (uc []string) {
+	for _, v := range ToUnicode(str) {
+		st := strings.Replace(v, "\\u", "U", -1)
 		uc = append(uc, st)
 	}
 
-	return uc
+	return
 }
 
 // UnicodeToUTF8 trans Unicode to utf-8
 func UnicodeToUTF8(str string) string {
-	i := 0
-	if strings.Index(str, `\u`) > 0 {
-		i = 1
-	}
-
-	strArr := strings.Split(str, `\u`)
-	last := len(strArr) - 1
-	if len(strArr[last]) > 4 {
-		strArr = append(strArr, strArr[last][4:])
-		strArr[last] = strArr[last][:4]
-	}
-
-	for ; i <= last; i++ {
-		if x, err := strconv.ParseInt(strArr[i], 16, 32); err == nil {
-			strArr[i] = fmt.Sprintf("%c", x)
+	res := []string{}
+	strArr := strings.Split(str, "\\u")
+	var snip string
+	for _, v := range strArr {
+		add := ""
+		if len(v) < 1 {
+			continue
 		}
+
+		if len(v) > 4 {
+			rs := []rune(v)
+			v = string(rs[:4])
+			add = string(rs[4:])
+		}
+
+		temp, err := strconv.ParseInt(v, 16, 32)
+		if err != nil {
+			snip += v
+		}
+
+		if temp > 0 {
+			snip += fmt.Sprintf("%c", temp)
+		}
+		snip += add
 	}
-	return strings.Join(strArr, "")
+
+	res = append(res, snip)
+	return strings.Join(res, "")
 }
