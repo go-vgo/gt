@@ -3,10 +3,12 @@ module github.com/go-vgo/gt/info
 go 1.13
 
 require (
-	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
-	github.com/go-ole/go-ole v1.2.4 // indirect
-	github.com/shirou/gopsutil v2.19.6+incompatible
+	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/go-ole/go-ole v1.2.5 // indirect
+	github.com/shirou/gopsutil v3.21.5+incompatible
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/vcaesar/tt v0.0.0-20191220180712-e14ab9e55f21
-	golang.org/x/sys v0.0.0-20191224085550-c709ea063b76 // indirect
+	github.com/tklauser/go-sysconf v0.3.6 // indirect
+	github.com/vcaesar/tt v0.11.0
+	golang.org/x/sys v0.0.0-20210611083646-a4fc73990273 // indirect
 )

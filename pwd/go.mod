@@ -3,6 +3,6 @@ module github.com/go-vgo/gt/pwd
 go 1.14
 
 require (
-	github.com/vcaesar/tt v0.10.0
-	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
+	github.com/vcaesar/tt v0.11.0
+	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 )
