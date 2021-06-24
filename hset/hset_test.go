@@ -36,6 +36,7 @@ func TestSetContains(t *testing.T) {
 	set.Add(3, 1, 2)
 	set.Add(2, 3)
 	set.Add()
+
 	actualValue := set.Contains()
 	tt.True(t, actualValue)
 
@@ -67,4 +68,12 @@ func TestSetRemove(t *testing.T) {
 
 	actualValue = set.Len()
 	tt.Equal(t, 0, actualValue)
+}
+
+func TestSetString(t *testing.T) {
+	set := New()
+	set.Add("11")
+	set.Add(1)
+
+	tt.Equal(t, "11, 1", set.String())
 }

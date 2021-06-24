@@ -137,8 +137,11 @@ func (hset *Hset) Same(other Set) bool {
 }
 
 // String returns a string representation of container
-func (hset *Hset) String() string {
-	str := "HasHset\n"
+func (hset *Hset) String(pre ...bool) string {
+	str := ""
+	if len(pre) > 0 {
+		str = "Has Hset:\n"
+	}
 	items := []string{}
 	for k := range hset.items {
 		items = append(items, fmt.Sprintf("%v", k))
