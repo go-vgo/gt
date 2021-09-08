@@ -39,7 +39,7 @@ func NewWatcher(paths string, config interface{}) {
 func Watch(paths string, config interface{}) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal("Conf fsnotify.NewWatcher() error: ", err)
+		log.Fatal("Conf Watch fsnotify.NewWatcher() error: ", err)
 	}
 	defer watcher.Close()
 

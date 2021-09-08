@@ -53,6 +53,12 @@ func Unicode(str string) (u string) {
 func ToUC(str string) (uc []string) {
 	for _, v := range ToUnicode(str) {
 		st := strings.Replace(v, "\\u", "U", -1)
+		if st == "\\\\" {
+			st = "\\"
+		}
+		if st == `\"` {
+			st = `"`
+		}
 		uc = append(uc, st)
 	}
 
