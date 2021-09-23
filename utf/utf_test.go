@@ -18,5 +18,5 @@ func TestUnicodeToUTF8(t *testing.T) {
 	r := CharCodeAt(text, 1)
 	tt.Equal(t, "22909", r)
 
-	tt.Equal(t, `[U4f60 U597d \\ \" \\ U4f60 \\ U597d \\ \"]`, ToUC(text))
+	tt.Equal(t, `[U4f60 U597d \ " \ U4f60 \ U597d \ "]`, ToUC(text))
 }
