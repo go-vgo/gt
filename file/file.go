@@ -28,7 +28,6 @@ import (
 func Read(fileName string) (string, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
-		// log.Println("os.Open: ", fileName, err)
 		return "", err
 	}
 	defer f.Close()
@@ -48,9 +47,7 @@ func Read(fileName string) (string, error) {
 	return str, nil
 }
 
-// WriteFile writes data to a file named by filename.
-// If the file does not exist, WriteFile creates it
-// and its upper level paths.
+// WriteFile write []byte data to a file by filename.
 func WriteFile(fileName string, data []byte) error {
 	err := os.MkdirAll(path.Dir(fileName), os.ModePerm)
 	if err != nil {
@@ -60,9 +57,7 @@ func WriteFile(fileName string, data []byte) error {
 	return ioutil.WriteFile(fileName, data, 0655)
 }
 
-// Write writes data to a file named by filename.
-// If the file does not exist, WriteFile creates it
-// and its upper level paths.
+// Write write string data to a file by filename.
 func Write(fileName, writeStr string) error {
 	err := os.MkdirAll(path.Dir(fileName), os.ModePerm)
 	if err != nil {
@@ -71,7 +66,6 @@ func Write(fileName, writeStr string) error {
 
 	fout, err := os.Create(fileName)
 	if err != nil {
-		// log.Println("Write file "+fileName, err)
 		return err
 	}
 	defer fout.Close()
@@ -116,7 +110,6 @@ func AppendTo(fileName, content string) error {
 	// write only
 	f, err := os.OpenFile(fileName, os.O_WRONLY, 0644)
 	if err != nil {
-		// log.Println("File open failed. err: " + err.Error())
 		return err
 	}
 
@@ -137,7 +130,17 @@ func Empty(fileName string, args ...int64) error {
 	return os.Truncate(fileName, size)
 }
 
-// List list file
+// Move move file to new path
+func Move(file, move string) error {
+	return os.Rename(file, move)
+}
+
+// Remove remove the file by file name
+func Remove(file string) {
+	os.RemoveAll(file)
+}
+
+// List list the file
 func List(dir, suffix string, isDir ...bool) (files []string, err error) {
 	files = make([]string, 0, 10)
 	dirIo, err := ioutil.ReadDir(dir)
@@ -166,12 +169,12 @@ func List(dir, suffix string, isDir ...bool) (files []string, err error) {
 	return files, nil
 }
 
-// ListDir list dir
+// ListDir list the dir
 func ListDir(dir, suffix string) (files []string, err error) {
 	return List(dir, suffix, false)
 }
 
-// Walk walk file
+// Walk walk the file
 func Walk(dir, suffix string, isDir ...bool) (files []string, err error) {
 	files = make([]string, 0, 30)
 	suffix = strings.ToUpper(suffix)
@@ -196,20 +199,20 @@ func Walk(dir, suffix string, isDir ...bool) (files []string, err error) {
 	return files, err
 }
 
-// WalkDir walk dir
+// WalkDir walk the dir
 func WalkDir(dir, suffix string) (files []string, err error) {
 	return Walk(dir, suffix, false)
 }
 
 // Copy copies file from source to target path.
 func Copy(src, dst string) error {
-	// Gather file information to set back later.
+	// Get file information to set back later
 	si, err := os.Lstat(src)
 	if err != nil {
 		return err
 	}
 
-	// Handle symbolic link.
+	// Handle symbolic link
 	if si.Mode()&os.ModeSymlink != 0 {
 		target, err := os.Readlink(src)
 		if err != nil {
@@ -234,7 +237,7 @@ func Copy(src, dst string) error {
 		return err
 	}
 
-	// Set back file information.
+	// Set back file information
 	err = os.Chtimes(dst, si.ModTime(), si.ModTime())
 	if err != nil {
 		return err
@@ -243,7 +246,7 @@ func Copy(src, dst string) error {
 	return os.Chmod(dst, si.Mode())
 }
 
-// CopyFile copies file from source to target path.
+// CopyFile copies file from source to target path
 func CopyFile(src, dst string) (int64, error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -251,7 +254,6 @@ func CopyFile(src, dst string) (int64, error) {
 	}
 	defer srcFile.Close()
 
-	// if Exist(dst) != true {
 	if !Exist(dst) {
 		err := Write(dst, "")
 		if err != nil {
@@ -261,7 +263,6 @@ func CopyFile(src, dst string) (int64, error) {
 
 	dstFile, err := os.Create(dst)
 	if err != nil {
-		// fmt.Println(err.Error())
 		return 0, err
 	}
 	defer dstFile.Close()
