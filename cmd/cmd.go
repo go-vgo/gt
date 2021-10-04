@@ -15,12 +15,11 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os/exec"
 	"runtime"
 )
 
-// GetName get params name
+// GetName get the params name
 func GetName(args ...string) (string, string) {
 	var (
 		cmdName = "/bin/bash"
@@ -30,7 +29,7 @@ func GetName(args ...string) (string, string) {
 
 	if runtime.GOOS == "windows" {
 		cmdName = "cmd"
-		params = "/C"
+		params = "/c"
 	}
 
 	if len(args) > 0 {
@@ -44,7 +43,22 @@ func GetName(args ...string) (string, string) {
 	return cmdName, params
 }
 
-// Run run cmd shell
+// Run the command shell return output
+func RunSh(path string) ([]byte, error) {
+	cmdName := "/bin/bash"
+	params := "-c"
+	if runtime.GOOS == "windows" {
+		cmdName = "cmd"
+		params = "/c"
+	}
+
+	cmd := exec.Command(cmdName, params, path)
+	output, err := cmd.Output()
+
+	return output, err
+}
+
+// Run run the cmd shell return error
 func Run(str string, args ...string) (string, string, error) {
 	cmdName, params := GetName(args...)
 
@@ -59,18 +73,19 @@ func Run(str string, args ...string) (string, string, error) {
 	return out.String(), e.String(), err
 }
 
-// Exec exex command stdout
-func Exec(cmdName string, params ...string) bool {
+// Exec exex the command stdout
+func Exec(cmdName string, params ...string) error {
 	cmd := exec.Command(cmdName, params...)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		log.Println("cmd.StdoutPipe error: ", err)
-		return false
+		// log.Println("cmd.StdoutPipe error: ", err)
+		return err
 	}
 	err = cmd.Start()
 	if err != nil {
-		log.Println("cmd.Start error: ", err)
+		// log.Println("cmd.Start error: ", err)
+		return err
 	}
 
 	reader := bufio.NewReader(stdout)
@@ -83,8 +98,8 @@ func Exec(cmdName string, params ...string) bool {
 	}
 
 	err = cmd.Wait()
-	if err != nil {
-		log.Println("cmd.Wait error: ", err)
-	}
-	return true
+	// if err != nil {
+	// 	log.Println("cmd.Wait error: ", err)
+	// }
+	return err
 }
