@@ -11,6 +11,7 @@
 package hset
 
 import (
+	"log"
 	"testing"
 
 	"github.com/vcaesar/tt"
@@ -23,6 +24,7 @@ func TestSetAdd(t *testing.T) {
 	set.Add(2)
 	set.Add(2, 3)
 	set.Add()
+	log.Println("set: ", set)
 
 	actualValue := set.Empty()
 	tt.False(t, actualValue)
@@ -36,6 +38,7 @@ func TestSetContains(t *testing.T) {
 	set.Add(3, 1, 2)
 	set.Add(2, 3)
 	set.Add()
+	log.Println("set: ", set)
 
 	actualValue := set.Contains()
 	tt.True(t, actualValue)
@@ -74,6 +77,8 @@ func TestSetString(t *testing.T) {
 	set := New()
 	set.Add("11")
 	set.Add(1)
+	s1 := set.String()
+	log.Println("set: ", s1)
 
-	tt.Equal(t, "11, 1", set.String())
+	tt.Equal(t, 5, len(s1))
 }
