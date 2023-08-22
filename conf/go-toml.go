@@ -8,13 +8,14 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//go:build !toml
 // +build !toml
 
 package conf
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/pelletier/go-toml"
 )
@@ -22,7 +23,7 @@ import (
 // Init toml file config
 func Init(filePath string, config interface{}) error {
 	confLock.Lock()
-	fileBytes, err := ioutil.ReadFile(filePath)
+	fileBytes, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Println("Toml init ioutil.ReadFile error: ", err)
 		return err
