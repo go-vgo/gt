@@ -20,7 +20,6 @@ import (
 	"path"
 	"strings"
 
-	"io/ioutil"
 	"path/filepath"
 )
 
@@ -54,7 +53,7 @@ func WriteFile(fileName string, data []byte) error {
 		return err
 	}
 
-	return ioutil.WriteFile(fileName, data, 0655)
+	return os.WriteFile(fileName, data, 0655)
 }
 
 // Write write string data to a file by filename.
@@ -87,17 +86,17 @@ func ReadIo(fileName string) (io.Reader, error) {
 
 // WriteIo wite file with io.Reader
 func WriteIo(fileName string, fio io.Reader) error {
-	data, err := ioutil.ReadAll(fio)
+	data, err := io.ReadAll(fio)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(fileName, data, 0655)
+	return os.WriteFile(fileName, data, 0655)
 }
 
 // ReadFromIO read io.Reader return string and error
 func ReadFromIO(fio io.Reader) (string, error) {
-	b, err := ioutil.ReadAll(fio)
+	b, err := io.ReadAll(fio)
 	if err != nil {
 		return "", err
 	}
@@ -113,7 +112,7 @@ func AppendTo(fileName, content string) error {
 		return err
 	}
 
-	n, _ := f.Seek(0, os.SEEK_END)
+	n, _ := f.Seek(0, io.SeekEnd)
 	_, err = f.WriteAt([]byte(content), n)
 
 	f.Close()
@@ -143,7 +142,7 @@ func Remove(file string) {
 // List list the file
 func List(dir, suffix string, isDir ...bool) (files []string, err error) {
 	files = make([]string, 0, 10)
-	dirIo, err := ioutil.ReadDir(dir)
+	dirIo, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
