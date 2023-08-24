@@ -57,11 +57,7 @@ func Bcrypt(pwd string) string {
 // BcryptCheck check bcrypt hash
 func BcryptCheck(hashedPwd, pwd string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(pwd))
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 // Sha1 sha1.Sum
