@@ -25,27 +25,33 @@ const (
 	RSSFormat           = "Mon, 02 Jan 2006 15:04:05 -0700"
 )
 
-// Add add some time
+// Add add a tm time to the begin time
 func Add(begin time.Time, tm string) (end time.Time) {
 	day, _ := time.ParseDuration(tm)
 	end = begin.Add(day)
 	return
 }
 
-// Timestamp get now timestamp
+// Timestamp get the timestamp of now
 func Timestamp() int64 {
 	return time.Now().Unix()
 }
 
-// TimestampNano get now timestamp
+// TimestampNano get the nano timestamp of now
 func TimestampNano() int64 {
 	return time.Now().UnixNano()
 }
 
-// GetMonTS get monday timestamp
-func GetMonTS() (int64, error) {
-	weekTm := now.BeginningOfWeek().Format(Format)
-	theTime, err := time.ParseInLocation(Format, weekTm, time.Local)
+// GetMonTS get the timestamp of the monday
+func GetMonTS(m ...bool) (int64, error) {
+	var tm string
+	if len(m) > 0 {
+		tm = now.BeginningOfMonth().Format(Format)
+	} else {
+		tm = now.BeginningOfWeek().Format(Format)
+	}
+
+	theTime, err := time.ParseInLocation(Format, tm, time.Local)
 	if err != nil {
 		return 0, err
 	}
@@ -55,4 +61,9 @@ func GetMonTS() (int64, error) {
 
 	timestamp := theTime.Unix()
 	return timestamp, nil
+}
+
+// GetMonthTS returns the timestamp of the first day of the month
+func GetMonthTS() (int64, error) {
+	return GetMonTS(true)
 }

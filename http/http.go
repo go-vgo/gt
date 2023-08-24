@@ -16,7 +16,6 @@ import (
 	"os"
 	"time"
 
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -45,7 +44,7 @@ func Get(api string, args ...url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // Post http post, params is url.Values type
@@ -71,7 +70,7 @@ func Post(api string, args ...interface{}) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // Api http api
@@ -187,7 +186,7 @@ func PostFile(filename, targetUrl, upParam string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
