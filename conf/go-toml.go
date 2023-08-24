@@ -21,9 +21,14 @@ import (
 )
 
 // Init toml file config
-func Init(filePath string, config interface{}) error {
+func Init(filePath string, config interface{}, embed1 ...bool) (err error) {
 	confLock.Lock()
-	fileBytes, err := os.ReadFile(filePath)
+	var fileBytes []byte
+	if len(embed1) > 0 {
+		fileBytes = []byte(filePath)
+	} else {
+		fileBytes, err = os.ReadFile(filePath)
+	}
 	if err != nil {
 		log.Println("Toml init os.ReadFile error: ", err)
 		return err

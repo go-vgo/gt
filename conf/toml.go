@@ -20,9 +20,15 @@ import (
 )
 
 // Init toml file config
-func Init(filePath string, config interface{}) error {
+func Init(filePath string, config interface{}, embed1 ...bool) (err error) {
 	confLock.Lock()
-	if _, err := toml.DecodeFile(filePath, config); err != nil {
+	if len(embed1) > 0 {
+		_, err = toml.Decode(filePath, config)
+	} else {
+		_, err = toml.DecodeFile(filePath, config)
+	}
+
+	if err != nil {
 		log.Println("toml.DecodeFile error: ", err)
 		return err
 	}
