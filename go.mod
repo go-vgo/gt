@@ -6,9 +6,9 @@ require (
 	github.com/jinzhu/now v1.1.5
 	github.com/pelletier/go-toml v1.9.5
 	github.com/vcaesar/tt v0.20.0
-	golang.org/x/crypto v0.12.0
+	golang.org/x/crypto v0.17.0
 )
 
-require golang.org/x/sys v0.11.0 // indirect
+require golang.org/x/sys v0.15.0 // indirect
 
 go 1.17
