@@ -17,7 +17,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/pelletier/go-toml"
+	"github.com/pelletier/go-toml/v2"
 )
 
 // Init toml file config
@@ -34,7 +34,10 @@ func Init(filePath string, config interface{}, embed1 ...bool) (err error) {
 		return err
 	}
 
-	toml.Unmarshal(fileBytes, config)
+	err = toml.Unmarshal(fileBytes, config)
+	if err != nil {
+		return err
+	}
 	confLock.Unlock()
 
 	return nil
