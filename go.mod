@@ -5,7 +5,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/jinzhu/now v1.1.5
 	github.com/pelletier/go-toml/v2 v2.2.2
-	github.com/vcaesar/tt v0.20.0
+	github.com/vcaesar/tt v0.20.1
 	golang.org/x/crypto v0.23.0
 )
 
