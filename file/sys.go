@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"path/filepath"
@@ -104,7 +105,11 @@ func Sha(filePath string, args ...string) (sha string, err error) {
 func IoSha(fileIO *os.File, args ...string) (string, error) {
 	h := sha1.New()
 	if len(args) > 0 {
-		h = sha256.New()
+		if args[0] == "md5" {
+			h = md5.New()
+		} else {
+			h = sha256.New()
+		}
 	}
 
 	_, err := io.Copy(h, fileIO)
