@@ -215,14 +215,12 @@ func Uptime() (uint64, error) {
 // PlatformInfo fetches system platform information.
 func PlatformInfo() (platform, family, osVersion string, err error) {
 	platform, family, osVersion, err = host.PlatformInformation()
-
 	return
 }
 
 // Platform returns the platform name and OS Version.
 func Platform() (string, error) {
 	platform, _, osVersion, err := host.PlatformInformation()
-
 	return platform + " " + osVersion, err
 }
 

@@ -103,12 +103,12 @@ func Sha(filePath string, args ...string) (sha string, err error) {
 
 // IoSha file sha
 func IoSha(fileIO *os.File, args ...string) (string, error) {
-	h := sha1.New()
+	h := sha256.New()
 	if len(args) > 0 {
 		if args[0] == "md5" {
 			h = md5.New()
 		} else {
-			h = sha256.New()
+			h = sha1.New()
 		}
 	}
 
